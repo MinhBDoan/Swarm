@@ -75,7 +75,7 @@ namespace Swarm.Editor
             TerrainFold(center,"South crossing / rolling ridge",new Vector3(-150,0,240),50,68,4.6f,15,sand);
             TerrainFold(center,"Middle junction / sweeping bank",new Vector3(-152,0,322),56,58,3.8f,-18,sand);
             TerrainFold(center,"North shelf / rolling approach",new Vector3(-158,0,485),34,62,3.4f,0,sand);
-            Block(center,"South crossing / offset bounce face",new Vector3(-122,-.8f,251),new Vector3(2,5,13),rock,15);
+            Block(center,"South crossing / offset bounce face",new Vector3(-122,-1.1f,251),new Vector3(2,5,13),rock,15);
             Block(center,"Middle junction / navigation landmark",new Vector3(-181,-.8f,329),new Vector3(7,6.4f,9),rock,-18);
             // The center cut crosses just north of the bank. Its existing walking route stays open.
             Sign(center,"SOUTH RIDGE / SLIDE CROSSING",new Vector3(-150,2,201),Vector3.forward,route);
