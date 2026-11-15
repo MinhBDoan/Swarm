@@ -83,7 +83,7 @@ namespace Swarm.Editor
             Block(center,"North shelf",new Vector3(-101,-2.9f,468),new Vector3(15,4,24),rock);
             Ramp(center,"North shelf / ascent",new Vector3(-101,-3.5f,436),new Vector3(-101,-.9f,456),10,route);
             Ramp(center,"North shelf / slide",new Vector3(-101,-.9f,480),new Vector3(-101,-3.2f,499),10,route);
-            Ramp(center,"North shelf / west walking ascent",new Vector3(-131,FloorHeight(-131,468)+.04f,468),new Vector3(-108.5f,-.9f,468),12,route);
+            Ramp(center,"North shelf / west walking ascent",new Vector3(-131,FloorHeight(-131,459)+.04f,459),new Vector3(-108.5f,-.9f,459),6,route);
             Block(center,"North shelf / bounce face",new Vector3(-108,-.1f,469),new Vector3(1.5f,2.2f,10),rock);
 
             // Traversal routes leave the middle lane clear for combat.
