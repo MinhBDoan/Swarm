@@ -70,12 +70,20 @@ namespace Swarm.Editor
             Block(center,"North rock island",new Vector3(-144,-1,455),new Vector3(18,5,10),rock,18);
             Block(center,"South rock island",new Vector3(-113,-1,204),new Vector3(14,4,11),rock,-20);
 
-            // A pair of low outcrops gives players a place to slide through or break line of sight.
-            Block(center,"South crossing / low cover",new Vector3(-153,-2.5f,243),new Vector3(13,2.4f,4),rock,32);
-            Block(center,"South crossing / low cover",new Vector3(-170,-2.4f,225),new Vector3(7,2,4),rock,-22);
+            // Broad terrain folds create speed decisions without subdividing the flats into rooms.
+            // Their edges taper exactly to the existing floor, so every side remains recoverable.
+            TerrainFold(center,"South crossing / rolling ridge",new Vector3(-150,0,240),50,68,4.6f,15,sand);
+            TerrainFold(center,"Middle junction / sweeping bank",new Vector3(-152,0,322),56,58,3.8f,-18,sand);
+            TerrainFold(center,"North shelf / rolling approach",new Vector3(-158,0,485),34,62,3.4f,0,sand);
+            Block(center,"South crossing / offset bounce face",new Vector3(-122,-.8f,251),new Vector3(2,5,13),rock,15);
+            Block(center,"Middle junction / navigation landmark",new Vector3(-181,-.8f,329),new Vector3(7,6.4f,9),rock,-18);
+            // The center cut crosses just north of the bank. Its existing walking route stays open.
+            Sign(center,"SOUTH RIDGE / SLIDE CROSSING",new Vector3(-150,2,201),Vector3.forward,route);
+            Sign(center,"MIDDLE JUNCTION / WEST: PUMPING YARD",new Vector3(-163,2,354),Vector3.back,route);
             Block(center,"North shelf",new Vector3(-101,-2.9f,468),new Vector3(15,4,24),rock);
             Ramp(center,"North shelf / ascent",new Vector3(-101,-3.5f,436),new Vector3(-101,-.9f,456),10,route);
             Ramp(center,"North shelf / slide",new Vector3(-101,-.9f,480),new Vector3(-101,-3.2f,499),10,route);
+            Ramp(center,"North shelf / west walking ascent",new Vector3(-131,FloorHeight(-131,468)+.04f,468),new Vector3(-108.5f,-.9f,468),12,route);
             Block(center,"North shelf / bounce face",new Vector3(-108,-.1f,469),new Vector3(1.5f,2.2f,10),rock);
 
             // Traversal routes leave the middle lane clear for combat.
@@ -101,6 +109,49 @@ namespace Swarm.Editor
             Sign(center,"CENTRAL FLATS / DRILL STATION",new Vector3(-81,3,619),Vector3.back,route);
             Sign(center,"CENTRAL FLATS / MINING BASIN",new Vector3(-118,2,88),Vector3.forward,route);
             Sign(center,"CENTRAL FLATS / PUMPING YARD",new Vector3(-231,4,350),Vector3.right,route);
+        }
+
+        static float FloorHeight(float x,float z)
+        {
+            for (int i=0;i<Rows.GetLength(0)-1;i++)
+            {
+                if (z<Rows[i,0] || z>Rows[i+1,0]) continue;
+                float t=Mathf.InverseLerp(Rows[i,0],Rows[i+1,0],z);
+                // All folds lie below the northern mouth, where each floor row is level across X.
+                return Mathf.Lerp(Rows[i,3],Rows[i+1,3],t);
+            }
+            return 0;
+        }
+
+        static void TerrainFold(Transform root,string name,Vector3 origin,float width,float length,float rise,float yaw,Material material)
+        {
+            const int columns=12,rows=16;
+            var vertices=new List<Vector3>();
+            var triangles=new List<int>();
+            Quaternion rotation=Quaternion.Euler(0,yaw,0);
+            for (int row=0;row<=rows;row++)
+            for (int col=0;col<=columns;col++)
+            {
+                float u=(float)col/columns,v=(float)row/rows;
+                Vector3 point=origin+rotation*new Vector3((u-.5f)*width,0,(v-.5f)*length);
+                float across=Mathf.Sin(u*Mathf.PI),along=Mathf.Sin(v*Mathf.PI);
+                point.y=FloorHeight(point.x,point.z)+.025f+rise*across*across*along*along;
+                vertices.Add(point);
+                if (row==0 || col==0) continue;
+                int a=(row-1)*(columns+1)+col-1,b=a+columns+1;
+                triangles.AddRange(new[] {a,b,a+1,a+1,b,b+1});
+            }
+            var mesh=new Mesh {name=name};
+            mesh.SetVertices(vertices); mesh.SetTriangles(triangles,0); mesh.RecalculateNormals(); mesh.RecalculateBounds();
+            string path="Assets/Geometry/"+name.Replace(" / ","_").Replace(" ","")+".asset";
+            var saved=AssetDatabase.LoadAssetAtPath<Mesh>(path);
+            if (saved) {EditorUtility.CopySerialized(mesh,saved);Object.DestroyImmediate(mesh);}
+            else {AssetDatabase.CreateAsset(mesh,path);saved=mesh;}
+            var obj=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));
+            obj.transform.SetParent(root);
+            obj.GetComponent<MeshFilter>().sharedMesh=saved;
+            obj.GetComponent<MeshRenderer>().sharedMaterial=material;
+            obj.GetComponent<MeshCollider>().sharedMesh=saved;
         }
 
         static void Ramp(Transform root,string name,Vector3 from,Vector3 to,float width,Material material)
