@@ -1,0 +1,30 @@
+/Library/
+/Temp/
+/Obj/
+/Logs/
+/UserSettings/
+/Builds/
+/Backups/
+/.vs/
+*.csproj
+*.sln
+*.user
+
+# Local editor/OS state and credentials
+/.idea/
+/.vscode/
+.DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12
+
+# High-resolution art experiments remain local until an archive/LFS policy is set.
+# Approved PNG references and asset scripts/notes outside this work folder are tracked.
+/Docs/ArtReferences/ChargerSingleWork/
+/Docs/ArtReferences/*.glb
+/Docs/ArtReferences/*.zip
+*.blend1
+*.blend2
