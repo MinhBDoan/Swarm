@@ -10,7 +10,21 @@ namespace Swarm
         void LateUpdate()
         {
             if (!target) return;
-            if (Input.GetKeyDown(KeyCode.Escape)) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
+            var combat=CombatPlayground.Instance;
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (combat && combat.Running) combat.ToggleLocalMenu();
+                else { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
+            }
+            // Closing one's own menu must remain possible while the party is paused.
+            // Other players' menus and upgrade choices still keep the world paused.
+            if (combat && combat.LocalMenuOpen)
+            {
+                Cursor.lockState = CursorLockMode.None; Cursor.visible = true;
+                if (Input.GetMouseButtonDown(0) && Input.mousePosition.x < Screen.width - 330 && !CombatPlayground.HudConsumesPointer)
+                    combat.ResumeLocalMenu();
+                return;
+            }
             if (CombatPlayground.BlocksInput) return;
             if (Input.GetMouseButtonDown(0) && Input.mousePosition.x < Screen.width - 330 && !CombatPlayground.HudConsumesPointer) { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
             if (Cursor.lockState == CursorLockMode.Locked)

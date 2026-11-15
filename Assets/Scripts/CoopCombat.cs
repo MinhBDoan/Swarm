@@ -49,7 +49,7 @@ namespace Swarm
             public string notice,bossMove;
             public PartyPlayerState player;
             public VisualState[] visuals;
-            public int revives; public PartyMemberInfo[] roster;
+            public int revives,menuPauseCount; public PartyMemberInfo[] roster;
         }
         class ProxyVisual { public GameObject body; public Vector3 position; public Quaternion rotation; public string label; public bool ownRange; }
         readonly Dictionary<ulong,PartyPlayerState> party = new Dictionary<ulong,PartyPlayerState>();
@@ -138,7 +138,7 @@ namespace Swarm
         }
         void ClearParty()
         {
-            party.Clear(); PartyPaused=PartyDefeated=false;
+            party.Clear(); ResetMenuPauseState(); PartyPaused=PartyDefeated=false;
             if (proxyRoot) { proxyRoot.SetActive(false); Destroy(proxyRoot); }
             proxies.Clear(); remoteRoster=new PartyMemberInfo[0]; remoteEnemyCount=remoteOrbCount=remoteCacheGuards=0;
         }
@@ -160,7 +160,7 @@ namespace Swarm
                 StopCombat(); partyWasNetworked=false; boundManager=null; player=null;
                 ResolveLocalPlayer(); Notice="Disconnected — offline movement practice.";
             }
-            if (IsCoopClient)
+            if (IsCoopClient && !PartyPaused && !LocalMenuOpen)
                 foreach (var visual in proxies.Values)
                     if (visual.body)
                     {
@@ -170,7 +170,7 @@ namespace Swarm
         }
         void HandleChoiceKeys()
         {
-            if (!ChoosingUpgrade || Health<=0 || Won) return;
+            if (!ChoosingUpgrade || Health<=0 || Won || LocalMenuOpen) return;
             for (int i=0;i<choices.Count;i++)
                 if (Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha1+i))) { ChooseUpgrade(i); return; }
             if (Input.GetKeyDown(KeyCode.T)) RerollUpgrades();
@@ -183,10 +183,11 @@ namespace Swarm
             SaveContext();
             var departed=new List<ulong>();
             foreach (var entry in party) if (!MotorFor(entry.Key)) departed.Add(entry.Key);
-            foreach (ulong id in departed) party.Remove(id);
+            foreach (ulong id in departed) { party.Remove(id); menuPausers.Remove(id); }
             PrunePulseIndicators();
-            PartyPaused=false; PartyDefeated=party.Count>0;
-            foreach (var state in party.Values) { PartyPaused |= state.choosing && state.health>0; PartyDefeated &= state.health<=0; }
+            RefreshPartyPause();
+            PartyDefeated=party.Count>0;
+            foreach (var state in party.Values) PartyDefeated &= state.health<=0;
             float dt=Mathf.Min(Time.deltaTime,.05f);
             if (!PartyPaused && !PartyDefeated && !Won)
             {
@@ -194,7 +195,7 @@ namespace Swarm
                 SwitchToNearest(CanyonLayout.BasinEncounterPosition);
                 TickEffects(dt);
                 TickBoss(dt);
-                if (AutoSpawn && bossPhase != BossPhase.Fighting) { TickRouteEncounters(dt); if (DownloadOccupants==0) TickWaves(dt); }
+                if (AutoSpawn) { if (bossPhase != BossPhase.Fighting) TickRouteEncounters(dt); TickWaves(dt); }
                 TickEnemies(dt); TickEnemyShots(dt);
                 foreach (ulong id in new List<ulong>(party.Keys))
                 {
@@ -316,7 +317,8 @@ namespace Swarm
             var command=JsonUtility.FromJson<CombatCommand>(ReadJson(reader));
             if (command==null || command.run!=runId) return;
             ulong original=contextId; SwitchContext(sender);
-            if(command.action=="supply")TrySupplyInteraction(command.choice);
+            if(command.action=="menu" && (command.choice==0 || command.choice==1)) ApplyMenuPauseCommand(sender,command.choice!=0);
+            else if(command.action=="supply")TrySupplyInteraction(command.choice);
             else if (command.action=="boss-console") TryBossConsole();
             else if (command.action=="boss-ready") ReadyForBoss();
             else if (command.action=="cache") StartCacheChallenge();
@@ -409,7 +411,8 @@ namespace Swarm
                     downloadState=(int)DownloadState,downloadPlayers=DownloadOccupants,downloadSpawns=DownloadEnemiesSpawned,
                     downloadProgress=DownloadProgress,downloadEmpty=downloadEmptyClock,
                     spawned=waveSpawned,rest=restClock,resting=Resting,elapsed=elapsed,cacheSeconds=CacheSecondsRemaining,
-                    notice=Notice,bossMove=SentinelAttackText,player=entry.Value,visuals=visuals,revives=reviveSerial,roster=roster.ToArray() };
+                    notice=Notice,bossMove=SentinelAttackText,player=entry.Value,visuals=visuals,revives=reviveSerial,
+                    menuPauseCount=MenuPauseCount,roster=roster.ToArray() };
                 SendJson("swarm.combat.state",entry.Key,JsonUtility.ToJson(packet));
             }
         }
@@ -419,7 +422,7 @@ namespace Swarm
             var packet=JsonUtility.FromJson<PartySnapshot>(ReadJson(reader));
             if (packet==null || packet.player==null || packet.player.id!=NetworkManager.Singleton.LocalClientId) return;
             bool newRun=packet.run!=runId, wasChoosing=ChoosingUpgrade;
-            if (newRun) { ResetLoadout(); seenRevive=0; seenKnockback=0; ReplicatedWeaponShapeMask=0; }
+            if (newRun) { ResetLoadout(); ResetMenuPauseState(); seenRevive=0; seenKnockback=0; ReplicatedWeaponShapeMask=0; }
             if (newRun && player) player.Respawn();
             if (packet.revives!=seenRevive && Health<=0 && packet.player.health>0 && player) player.Respawn();
             seenRevive=packet.revives; runId=packet.run; contextId=packet.player.id;
@@ -429,6 +432,7 @@ namespace Swarm
                 player.ApplyImpulse(packet.player.knockback);
             }
             LoadState(packet.player); Running=packet.running; Won=packet.won; PartyPaused=packet.paused; PartyDefeated=packet.defeated;
+            AcceptMenuPauseSnapshot(packet.menuPauseCount);
             Wave=packet.wave; Kills=packet.kills; remoteEnemyCount=packet.totalEnemies; remoteOrbCount=packet.orbs;
             cacheIndex=Mathf.Clamp(packet.selectedCache,0,cacheStates.Length-1);
             if (packet.caches!=null && packet.caches.Length==cacheStates.Length)
@@ -450,7 +454,7 @@ namespace Swarm
             Resting=packet.resting; elapsed=packet.elapsed; CacheSecondsRemaining=packet.cacheSeconds; Notice=packet.notice;
             remoteRoster=packet.roster ?? new PartyMemberInfo[0];
             WeaponStatus="Host simulates shared combat";
-            if (ChoosingUpgrade || Won || PartyDefeated) ReleaseMouse();
+            if (ChoosingUpgrade || Won || PartyDefeated || LocalMenuOpen) ReleaseMouse();
             else if (wasChoosing || newRun) CaptureMouse();
             ApplyVisuals(packet.visuals); ReceivedCombatSnapshots++;
             if (!Running) ClearParty();
