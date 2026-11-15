@@ -10,7 +10,7 @@ No Unity build, multiplayer regression suite, or fresh gameplay playtest was run
 - Main scene: `Assets/Scenes/CanyonPlayground.unity`.
 - Netcode for GameObjects **1.8.1** with Unity Transport; direct IPv4 / UDP 7777.
 - Blender **5.3.0** is installed locally; it has been used to prepare the Charger.
-- Local Git was initialized on November 15, 2026 on `main`, with `origin` pointing to `https://github.com/MinhBDoan/Swarm.git`. Initial upload is pending the repository visibility choice. See [version control policy](VERSION_CONTROL.md) for exclusions and naming.
+- Local Git was initialized on November 15, 2026 on `main`, with `origin` pointing to `https://github.com/MinhBDoan/Swarm.git`. The owner approved public visibility, and the initial checkpoint was uploaded to GitHub on November 15, 2026. See [version control policy](VERSION_CONTROL.md) for exclusions and naming.
 
 Open the scene, enter Play, click the Game view, and press **F** to start combat. Use **Swarm > Open Canyon Playground** if needed. **Swarm > Build Windows Playtest** builds to `Builds/Swarm/Swarm.exe`; the build method is `Swarm.Editor.MultiplayerSetup.BuildWindows`.
 
@@ -69,7 +69,7 @@ The game should not be PC-intensive. Specific target hardware and budgets remain
 - Replication uses prototype snapshots. Full-party bandwidth, frame time, VFX readability, and realistic hardware performance are not freshly measured.
 - Map flow, accidental holes, navigation on new terrain, balance, and optional reward value need repeatable playtests.
 - Older `PROGRESS.md` sections claim combat is solo-only; this is superseded by `CoopCombat.cs` and later player tests. Older wave/boss/terminal timings in `README.md` are historical, not authoritative tuning values.
-- Local version control is initialized. Complete the initial checkpoint/upload and isolated working copies before concurrent agent edits.
+- Local version control is initialized. The initial checkpoint is uploaded. Prepare isolated working copies before concurrent agent edits.
 
 ## Existing validation tools
 
