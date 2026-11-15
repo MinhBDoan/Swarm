@@ -57,7 +57,7 @@ namespace Swarm
         public string WeaponStatus { get; private set; } = "Waiting for combat";
         public string Notice { get; private set; } = "Try the first combat loop here.";
 
-        class Enemy { public GameObject body; public NavMeshAgent agent; public Renderer visual; public float health, maxHealth, flash, damageScale=1, attackClock = 3; public bool elite; public GameObject warning; public EnemyKind kind; public Vector3 aim;
+        class Enemy { public GameObject body; public NavMeshAgent agent; public Renderer visual; public float health, maxHealth, flash, damageScale=1, overtimeHealth=1, overtimeDamage=1, attackClock = 3; public bool elite; public GameObject warning; public EnemyKind kind; public Vector3 aim;
             public ChargePhase chargePhase;
             public SentinelPhase sentinelPhase;
             public int sentinelMove;
@@ -221,7 +221,7 @@ namespace Swarm
             if (recoveryRank > 0) Health = Mathf.Min(100,Health+RecoveryPerSecond*dt);
             TickEffects(dt);
             TickBoss(dt);
-            if (AutoSpawn && bossPhase != BossPhase.Fighting) { TickRouteEncounters(dt); if (DownloadOccupants==0) TickWaves(dt); }
+            if (AutoSpawn) { if (bossPhase != BossPhase.Fighting) TickRouteEncounters(dt); TickWaves(dt); }
             TickEnemies(dt);
             TickEnemyShots(dt);
             if (AutoFire && fireClock <= 0) Fire();
@@ -321,16 +321,17 @@ namespace Swarm
         }
         void TickWaves(float dt)
         {
-            if (Won || bossPhase==BossPhase.Fighting) return;
+            if (Won) return;
             int nextWave=1+Mathf.FloorToInt(elapsed/60);
             if (nextWave>Wave)
             {
                 Wave=nextWave;
                 waveSpawned=0;
-                Resting=true;
-                restClock=5;
+                Resting=!IsAreaOvertime && bossPhase!=BossPhase.Fighting;
+                restClock=Resting ? 5 : 0;
                 if (CoopAuthority) ReviveParty();
-                Notice="Swarm pressure rising. Regroup for the next wave.";
+                Notice=IsAreaOvertime ? "OVERTIME: overwhelming waves keep growing. Defeat the Sentinel!" : "Swarm pressure rising. Regroup for the next wave.";
+                if (IsAreaOvertime) spawnClock=0;
             }
             if (Resting)
             {
@@ -366,12 +367,6 @@ namespace Swarm
         }
         float RunMinutes => Mathf.Max(0,elapsed)/60;
         int ExtraPartyMembers => CoopAuthority ? Mathf.Max(0,party.Count-1) : 0;
-        int SwarmPackSize => Mathf.Min(10,3+Mathf.FloorToInt(RunMinutes/2)+ExtraPartyMembers);
-        int SwarmEnemyLimit => Mathf.Min(96,24+Mathf.FloorToInt(RunMinutes*5)+ExtraPartyMembers*6);
-        float PackRecovery => Mathf.Max(1.5f,4.5f-RunMinutes*.3f);
-        float EnemyHealthScale => 1+RunMinutes*.35f+RunMinutes*RunMinutes*.05f;
-        float EnemyDamageScale => 1+Mathf.Min(2,RunMinutes*.09f);
-
         void SwitchToSwarmTarget()
         {
             SaveContext();
@@ -484,7 +479,8 @@ namespace Swarm
             health*=1+(elite ? .75f : .35f)*ExtraPartyMembers;
             agent.speed*=1+Mathf.Min(.25f,minutes*.02f);
             enemies.Add(new Enemy { body=body, agent=agent, visual=visual.GetComponent<Renderer>(),
-                health=health,maxHealth=health,damageScale=EnemyDamageScale,elite=elite,kind=kind,
+                health=health,maxHealth=health,damageScale=EnemyDamageScale,
+                overtimeHealth=OvertimeHealthMultiplier,overtimeDamage=OvertimeDamageMultiplier,elite=elite,kind=kind,
                 attackClock=charger ? .8f : spitter ? 2.2f : 3 });
             if (runner) RunnersSpawned++;
             if (spitter) SpittersSpawned++;
@@ -495,6 +491,7 @@ namespace Swarm
             ulong original = contextId;
             foreach (var enemy in enemies)
             {
+                ApplyOvertimePressure(enemy);
                 if (CoopAuthority) SwitchToNearest(enemy.body.transform.position);
                 bool found = FindPlayerNavigation(out var destination);
                 if (enemy.flash > 0)
