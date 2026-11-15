@@ -119,10 +119,11 @@ namespace Swarm
                 DrawReadableParty();
                 if (!ChoosingUpgrade && !Won && !PartyDefeated && Health>0) DrawObjectivePanel(width);
                 HudLabel(new Rect(width-282,height-42,260,25),"F8  Switch HUD    /    Esc  Menu",hudSmall,HudMuted);
-                if (ChoosingUpgrade) DrawUpgradeCards(width,height);
+                if (LocalMenuOpen) DrawPauseMenu(width,height);
+                else if (ChoosingUpgrade) DrawUpgradeCards(width,height);
                 else if (Won || Health<=0 && (!NetworkActive || PartyDefeated)) DrawRunResult(width,height);
                 else if (Health<=0) DrawCenteredStatus(width,height,"YOU ARE DOWN","Your team is still fighting. Return with 50 HP at the next wave break.",new Color(1,.5f,.4f));
-                else if (PartyPaused) DrawCenteredStatus(width,height,"WAITING FOR TEAMMATES","Combat is paused while your party finishes choosing upgrades.",HudCyan);
+                else if (PartyPaused) DrawCenteredStatus(width,height,MenuPauseActive ? "PARTY PAUSED" : "WAITING FOR TEAMMATES",MenuPauseActive ? "A teammate has a menu open. The area timer and combat are paused." : "Combat and the area timer are paused while your party chooses upgrades.",HudCyan);
                 else if (Cursor.lockState!=CursorLockMode.Locked && !Application.isBatchMode) DrawPauseMenu(width,height);
                 if (NetworkActive && Cursor.lockState!=CursorLockMode.Locked)
                 {
@@ -148,7 +149,7 @@ namespace Swarm
                 Vector2 pointer=new Vector2(Input.mousePosition.x,Screen.height-Input.mousePosition.y)/scale;
                 float width=Screen.width/scale,height=Screen.height/scale;
                 float menuY=Instance.ChoosingUpgrade ? 22 : Instance.ShowDownloadObjective ? 230 : 184;
-                return new Rect(width/2-350,height/2-100,700,265).Contains(pointer) || new Rect(width-330,menuY,308,110).Contains(pointer);
+                return new Rect(width/2-350,height/2-100,700,310).Contains(pointer) || new Rect(width-330,menuY,308,110).Contains(pointer);
             }
         }
         public static bool WorldLabelBlocked(Rect rect)
@@ -161,16 +162,14 @@ namespace Swarm
                 logical.Overlaps(new Rect(width/2-230,22,460,122)) || logical.Overlaps(new Rect(width-330,22,308,Instance && Instance.ShowDownloadObjective ? 190 : 143)) ||
                 Instance.NetworkActive && logical.Overlaps(new Rect(22,22,254,300));
         }
-        string CombatWaveTitle() => Won ? "CANYON CLEARED" : Resting ? "WAVE CLEARED" :
+        string CombatWaveTitle() => Won ? "CANYON CLEARED" : IsAreaOvertime ? "OVERTIME / "+(bossPhase==BossPhase.Fighting ? "SENTINEL" : $"SWARM {Wave}") : Resting ? "WAVE CLEARED" :
             bossPhase==BossPhase.Fighting ? "CANYON SENTINEL" : $"SWARM {Wave}";
 
-        string CombatWaveDetail() => Resting ?
-            $"Next encounter in {Mathf.CeilToInt(restClock)}s  /  Collect XP and regroup" :
-            $"{EnemyCount} enemies alive    /    {Kills} defeated    /    {Mathf.FloorToInt(elapsed/60):00}:{Mathf.FloorToInt(elapsed%60):00}";
+        string CombatWaveDetail() => $"{AreaTimerText}  /  {EnemyCount} enemies  /  {Kills} defeated";
 
         void DrawWaveHeader(float width)
         {
-            var rect=new Rect(width/2-230,22,460,122); HudPanelBox(rect,HudCyan);
+            var rect=new Rect(width/2-230,22,460,122); HudPanelBox(rect,IsAreaOvertime ? new Color(1,.35f,.18f) : HudCyan);
             HudLabel(new Rect(rect.x+18,rect.y+12,425,30),CombatWaveTitle(),hudTitle);
             HudLabel(new Rect(rect.x+18,rect.y+49,425,25),CombatWaveDetail(),hudSmall,HudMuted);
             HudLabel(new Rect(rect.x+18,rect.y+79,425,32),$"PARTY MONEY  {SharedMoney:N0}",hudTitle,new Color(1,.8f,.3f));
@@ -334,9 +333,11 @@ namespace Swarm
         }
         void DrawPauseMenu(float width,float height)
         {
-            DrawCenteredStatus(width,height,NetworkActive ? "MOUSE RELEASED" : "PAUSED",NetworkActive ? "The shared fight continues. Click the canyon to return." : "Click the canyon to resume.",HudCyan);
+            DrawCenteredStatus(width,height,NetworkActive ? "PARTY PAUSED" : "PAUSED",
+                "Gameplay and the area timer are paused. Resume when ready.",HudCyan);
+            if (GUI.Button(new Rect(width/2-150,height/2+101,300,44),"RESUME",hudButton)) { ResumeLocalMenu(); if (!LocalMenuOpen) CaptureMouse(); }
             if (!NetworkActive || NetworkManager.Singleton.IsServer)
-                if (GUI.Button(new Rect(width/2-150,height/2+101,300,44),"STOP COMBAT",hudButton)) { StopCombat(); ReleaseMouse(); }
+                if (GUI.Button(new Rect(width/2-150,height/2+155,300,44),"STOP COMBAT",hudButton)) { StopCombat(); ReleaseMouse(); }
         }
         void DrawPracticeCombatMenu()
         {

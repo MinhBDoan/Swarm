@@ -1,5 +1,9 @@
 # Swarm movement prototype
 
+Latest combined playtest: **Builds/Swarm-TerrainTimerPause/Swarm.exe**. See
+[the November 15 playtest guide](Docs/Planning/FIRST_BATCH_PLAYTEST.md) for terrain,
+countdown/overtime, whole-party menus, and validation details.
+
 For the current design review, implementation snapshot, proposed milestone, and
 asset workflow, start with [the project review pack](Docs/Planning/README.md).
 The detailed notes below include historical tuning and behavior that may have

@@ -43,6 +43,16 @@ namespace Swarm
             yield return new WaitForSecondsRealtime(2);
             ScreenCapture.CaptureScreenshot(Path.Combine(folder,"combat-1600.png"));
             yield return new WaitForSecondsRealtime(1);
+            type.GetField("elapsed",Flags).SetValue(combat,625f);
+            yield return new WaitForSecondsRealtime(.5f);
+            ScreenCapture.CaptureScreenshot(Path.Combine(folder,"overtime-1600.png"));
+            yield return new WaitForSecondsRealtime(.5f);
+            combat.SetLocalMenuOpen(true);
+            yield return new WaitForSecondsRealtime(.5f);
+            ScreenCapture.CaptureScreenshot(Path.Combine(folder,"menu-pause-1600.png"));
+            yield return new WaitForSecondsRealtime(.5f);
+            combat.ResumeLocalMenu();
+            type.GetField("elapsed",Flags).SetValue(combat,92f);
             combat.AutoFire=false;
             var weapons=(Dictionary<BoltUpgrade,int>)type.GetField("weapons",Flags).GetValue(combat); weapons.Remove(BoltUpgrade.RocketLauncher);
             type.GetProperty("ChoosingUpgrade").SetValue(combat,true);

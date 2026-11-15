@@ -19,3 +19,5 @@ The original Charger GLBs and experimental Blender files are **not backed up by 
 Create a branch and isolated worktree per bounded assignment. Do not share a Unity editor cache or edit the same scene/prefab concurrently. Assign one owner to integrate scene-builder changes and regenerate the saved scene. Carry `.meta` files with asset changes so GUID references survive.
 
 Use ordinary commits describing the player-facing change. Review staged files before committing. Push completed branches and review the changes before integrating into `main`. An initial repository checkpoint does not mean the current gameplay has been freshly validated.
+
+First parallel batch uses `map/central-flats`, `gameplay/area-timer`, and `fix/group-pause` in separate worktrees under the sibling `Swarm-work` directory. The coordinator cherry-picks reviewed commits into `main` and owns the combined Unity scene/build.

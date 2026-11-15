@@ -2,7 +2,7 @@
 
 **Snapshot:** November 14, 2026 · source/file inspection and conversation history.
 
-No Unity build, multiplayer regression suite, or fresh gameplay playtest was run for this documentation task. Earlier recorded checks are historical evidence, not a new pass.
+Initial document snapshot was source inspection only. **November 15 first parallel batch:** terrain, timer/overtime and group-menu pauses are integrated; a Windows development build and automated solo/host-client/six-instance checks passed. See [first batch playtest](FIRST_BATCH_PLAYTEST.md) for exact evidence and limits; player feel review remains pending.
 
 ## Environment and entry points
 
@@ -16,7 +16,7 @@ Open the scene, enter Play, click the Game view, and press **F** to start combat
 
 Controls: WASD move; mouse camera; Space jump/bounce or zip exit; Ctrl/C slide or zip drop; E interact/grab zip; Escape release cursor; R reset position; 1/2/3 choose upgrade; T reroll; X skip. Follow in-game prompts where interactions compete. R is a prototype aid.
 
-For two local instances, use editor plus a standalone build: Host in one, Join `127.0.0.1` in the other. Join all players before starting combat. The host starts/stops/retries. A versioned build exists at `Builds/Swarm-SentinelMoves/Swarm.exe`; existence does not prove it matches today's source.
+For two local instances, use editor plus a standalone build: Host in one, Join `127.0.0.1` in the other. Join all players before starting combat. The host starts/stops/retries. Current combined playtest: `Builds/Swarm-TerrainTimerPause/Swarm.exe`. The older SentinelMoves build is retained as a previous checkpoint.
 
 ## Implemented systems and evidence
 
@@ -47,12 +47,12 @@ Latest reviewed experiment: [Charger_Skeleton_Test_v4.blend](../ArtReferences/Ch
 - No final run, charge, hit, death animations, LODs, material optimization, or gameplay prefab integration.
 - Earlier versions are preserved. The first three-creature export was unsuitable because the turnaround sheet became multiple creatures.
 
-## Latest design review — not implemented by this document update
+## Latest confirmed design and implementation
 
-- Run structure: **three areas, each with its own 10-minute countdown**. The canyon is the only implemented area; its multiple POIs share one area clock. Waves increase over time. After expiry, overtime keeps raising enemy strength and wave numbers in an overwhelming escalation intended to eventually defeat delaying players. This review changed the requirements/backlog only; the current gameplay has not been updated to implement that deadline/overtime design.
+- Run structure: **three areas, each with its own 10-minute countdown**. The canyon is the only implemented area; its multiple POIs share one area clock. Waves increase over time. After expiry, overtime keeps raising enemy strength and wave numbers in an overwhelming escalation intended to eventually defeat delaying players. Implemented November 15 for the canyon: a 600-second active-simulation countdown and increasing overtime pack/strength pressure. Expiry and later escalation passed the runtime probe; tuning remains provisional.
 - Shared money and shared XP are confirmed for now, matching the existing shared wallet and XP implementation. Chests and terminals are now confirmed to reward the whole party, matching the prototype. Each player selects independently; individual-only upgrade awards are excluded.
-- Synchronized shared-XP upgrades and whole-party terminal/chest rewards pause gameplay and the active area countdown until the group finishes its choices. The current prototype already has a party upgrade pause, but the new area countdown is not implemented. All upgrade awards are group events. Opening a menu is now confirmed to pause the entire party and area timer; this differs from the current co-op Escape behavior and still needs implementation.
-- Boss activation is confirmed to leave the area countdown and escalating waves running. Expiry during the fight starts overtime; activating after expiry does not cancel overtime. This rule has not been implemented or tested by the documentation update. Menu pauses are confirmed; post-defeat clock handling remains open. Bosses have no separate duration limit: fight until killed or the run ends.
+- Synchronized shared-XP upgrades and whole-party terminal/chest rewards pause gameplay and the active area countdown until the group finishes its choices. Both the group upgrade pause and new area clock are implemented and their pause/resume behavior was checked. All upgrade awards are group events. Escape now explicitly opens/closes a menu that pauses the party and area clock. Overlapping menus/choices and paused disconnect cleanup passed host/client checks.
+- Boss activation is confirmed to leave the area countdown and escalating waves running. Expiry during the fight starts overtime; activating after expiry does not cancel overtime. Implemented November 15: wave spawning continues during boss fights; the timer probe checks this path. Menu pauses are confirmed; post-defeat clock handling remains open. Bosses have no separate duration limit: fight until killed or the run ends.
 - New chest direction: randomized tiers, fixed starting prices by tier, and escalating prices as the party buys more chests. Current code still has fixed placements and Rare/Epic prices (30/75); the new pricing/tier selection is not implemented. Tier odds, growth formula, affected tiers, placement randomization, and area/run reset scope remain open.
 - The third area setting is open; cyberpunk city is the intended second setting.
 
@@ -60,13 +60,13 @@ Latest reviewed experiment: [Charger_Skeleton_Test_v4.blend](../ArtReferences/Ch
 
 Player confirms the movement/co-op/adventure vision but expects more tuning. Next priority is fleshing out the existing canyon, reviewing its possibly excessive size, and reducing empty/low-value spaces while preserving useful combat and movement room. A map audit should determine whether to add purposeful content or compress sections. This is a map milestone, not a commitment to complete every proposed gameplay system next.
 
-The game should not be PC-intensive. Specific target hardware and budgets remain unchosen. Third area setting remains undecided. Charger work stays paused at v4. No map, menu, or gameplay implementation changed in this documentation review.
+The game should not be PC-intensive. Specific target hardware and budgets remain unchosen. Third area setting remains undecided. Charger work stays paused at v4. The November 15 first batch implements a central terrain pass, group menus, and canyon timer/overtime; the map milestone remains in progress pending player review.
 
 ## Known limitations and documentation conflicts
 
 - No second playable map, map transition, or build carryover yet.
 - No internet invite/matchmaking flow, mid-run join, host migration, or production server reconciliation. Movement is owner-authoritative; combat is host-authoritative.
-- Replication uses prototype snapshots. Full-party bandwidth, frame time, VFX readability, and realistic hardware performance are not freshly measured.
+- Replication uses prototype snapshots. Six local instances passed shared-combat checks, but remote-network bandwidth, representative CPU/GPU frame time, VFX readability, and lower-end hardware performance are not established.
 - Map flow, accidental holes, navigation on new terrain, balance, and optional reward value need repeatable playtests.
 - Older `PROGRESS.md` sections claim combat is solo-only; this is superseded by `CoopCombat.cs` and later player tests. Older wave/boss/terminal timings in `README.md` are historical, not authoritative tuning values.
 - Local version control is initialized. The initial checkpoint is uploaded. Prepare isolated working copies before concurrent agent edits.

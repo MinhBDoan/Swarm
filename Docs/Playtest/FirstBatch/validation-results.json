@@ -1,0 +1,258 @@
+{
+  "solo-results.json": [
+    {
+      "test": "terrain",
+      "exit": 0,
+      "seconds": 5.5,
+      "results": [
+        "SWARM_CENTRAL_TERRAIN_TRACE: patch=0 walk=True along=35.1 rise=4.2 slide=True peak=16.7",
+        "SWARM_CENTRAL_TERRAIN_TRACE: patch=1 walk=True along=30.2 rise=3.8 slide=True peak=14.8",
+        "SWARM_CENTRAL_TERRAIN_TRACE: patch=2 walk=True along=32.0 rise=3.7 slide=True peak=13.8",
+        "SWARM_CENTRAL_TERRAIN_TEST: PASS enemyAccess=True"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "timer",
+      "exit": 0,
+      "seconds": 2.4,
+      "results": [
+        "SWARM_AREA_TIMER_TEST: PASS initial=True pre=True deadline=True enemiesAtExpiry=16 noForcedBoss=True existingEnemiesGrow=True laterEscalation=True bossWaves=True bounded=True selectionPause=True resume=True reset=True"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "movement",
+      "exit": 0,
+      "seconds": 8.6,
+      "results": [
+        "SWARM_MOVEMENT_TRACE: step=0 pos=(200.00, 8.86, -7.54) velocity=(0.00, 1.95, 10.84) sliding=True",
+        "SWARM_MOVEMENT_TRACE: step=50 pos=(200.00, 11.20, -1.21) velocity=(0.00, -0.98, 2.80) sliding=True",
+        "SWARM_MOVEMENT_TRACE: step=100 pos=(200.00, 10.73, -2.51) velocity=(0.00, -3.90, -5.23) sliding=True",
+        "SWARM_MOVEMENT_TRACE: step=150 pos=(200.00, 7.33, -11.84) velocity=(0.00, -6.83, -13.27) sliding=True",
+        "SWARM_MOVEMENT_TRACE: step=200 pos=(200.00, 1.01, -29.20) velocity=(0.00, -9.75, -21.30) sliding=True",
+        "SWARM_MOVEMENT_TEST: PASS enteredFast=True slowed=True rollback=True flatCarry=True jumpCarry=True"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "loadout",
+      "exit": 0,
+      "seconds": 7.5,
+      "results": [
+        "SWARM_LOADOUT_TRACE: Boomerang pass=True kills=0 hits=2 splash=0 pierce=0",
+        "SWARM_LOADOUT_TRACE: PulseField pass=True kills=1 hits=0 splash=0 pierce=0",
+        "SWARM_LOADOUT_TRACE: RocketLauncher pass=True kills=1 hits=1 splash=1 pierce=0",
+        "SWARM_LOADOUT_TRACE: PiercingBow pass=True kills=2 hits=2 splash=0 pierce=1",
+        "SWARM_LOADOUT_TEST: PASS slots=True cap=True offers=True rerolls=True skip=True queue=True reset=True"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "sentinel",
+      "exit": 0,
+      "seconds": 16.6,
+      "results": [
+        "SWARM_SENTINEL_STEP: sweep can be dodged behind boss=True",
+        "SWARM_SENTINEL_STEP: spawn=True",
+        "SWARM_SENTINEL_STEP: wait=True",
+        "SWARM_SENTINEL_STEP: shockwave crosses and hits once=True",
+        "SWARM_SENTINEL_STEP: spawn=True",
+        "SWARM_SENTINEL_STEP: wait=True",
+        "SWARM_SENTINEL_STEP: wait=True",
+        "SWARM_SENTINEL_JUMP_TRACE: health=100 player=(0.00, 3.30, 8.00) boss=(0.00, 0.05, 0.00)",
+        "SWARM_SENTINEL_STEP: shockwave can be jumped=True",
+        "SWARM_SENTINEL_STEP: spawn=True",
+        "SWARM_SENTINEL_STEP: wait=True",
+        "SWARM_SENTINEL_STEP: double pound has two impacts=True",
+        "SWARM_SENTINEL_STEP: four move cycle wraps=True",
+        "SWARM_SENTINEL_STEP: spawn=True",
+        "SWARM_SENTINEL_STEP: wait=True",
+        "SWARM_SENTINEL_STEP: wait=True",
+        "SWARM_SENTINEL_STEP: wall stops charge early=True",
+        "SWARM_SENTINEL_TEST: PASS"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "pursuit",
+      "exit": 0,
+      "seconds": 59.3,
+      "results": [
+        "SWARM_FLATS_PURSUIT_TEST: PASS"
+      ],
+      "exceptions": []
+    }
+  ],
+  "coop-results.json": [
+    {
+      "test": "group-pause",
+      "role": "host",
+      "exit": 0,
+      "results": [
+        "SWARM_GROUPPAUSE_STEP: connected=True",
+        "SWARM_GROUPPAUSE_STEP: two players=True",
+        "SWARM_GROUPPAUSE_STEP: overlapping menus=True",
+        "SWARM_GROUPPAUSE_STEP: remote menu retains pause=True",
+        "SWARM_GROUPPAUSE_STEP: remote menu clock frozen=True",
+        "SWARM_GROUPPAUSE_STEP: remote menu drill frozen=True",
+        "SWARM_GROUPPAUSE_STEP: remote menu movement blocked=True",
+        "SWARM_GROUPPAUSE_STEP: only host upgrade pending=True",
+        "SWARM_GROUPPAUSE_STEP: upgrade retains pause after menus close=True",
+        "SWARM_GROUPPAUSE_STEP: upgrade clock frozen=True",
+        "SWARM_GROUPPAUSE_STEP: upgrade drill frozen=True",
+        "SWARM_GROUPPAUSE_STEP: upgrade movement blocked=True",
+        "SWARM_GROUPPAUSE_STEP: all selections resolved=True",
+        "SWARM_GROUPPAUSE_STEP: simulation resumes=True",
+        "SWARM_GROUPPAUSE_STEP: remote disconnect menu opened=True",
+        "SWARM_GROUPPAUSE_STEP: remote disconnected=True",
+        "SWARM_GROUPPAUSE_STEP: departed pause removed=True",
+        "SWARM_GROUPPAUSE_STEP: clock resumes after disconnect=True",
+        "SWARM_GROUPPAUSE_STEP: retry clears menu state=True",
+        "SWARM_GROUPPAUSE_TEST: PASS role=host"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "group-pause",
+      "role": "client",
+      "exit": 0,
+      "results": [
+        "SWARM_GROUPPAUSE_STEP: connected=True",
+        "SWARM_GROUPPAUSE_STEP: host menu received=True",
+        "SWARM_GROUPPAUSE_STEP: host pause replicated=True",
+        "SWARM_GROUPPAUSE_STEP: shared upgrade received=True",
+        "SWARM_GROUPPAUSE_STEP: client upgrade resolved=True",
+        "SWARM_GROUPPAUSE_STEP: host pending choice keeps client paused=True",
+        "SWARM_GROUPPAUSE_STEP: host choice completed=True",
+        "SWARM_GROUPPAUSE_STEP: disconnect phase received=True",
+        "SWARM_GROUPPAUSE_STEP: leave clears menu state=True",
+        "SWARM_GROUPPAUSE_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "boss-coop",
+      "role": "host",
+      "exit": 0,
+      "results": [
+        "SWARM_BOSSCOOP_STEP: connected=True",
+        "SWARM_BOSSCOOP_STEP: party joined=True",
+        "SWARM_BOSSCOOP_STEP: distant proposal rejected=True",
+        "SWARM_BOSSCOOP_STEP: remote proposal=True",
+        "SWARM_BOSSCOOP_STEP: waits for teammate=True",
+        "SWARM_BOSSCOOP_STEP: host votes from afar=True",
+        "SWARM_BOSSCOOP_STEP: unanimous countdown=True",
+        "SWARM_BOSSCOOP_STEP: no spawn before countdown=True",
+        "SWARM_BOSSCOOP_STEP: early boss spawn=True",
+        "SWARM_BOSSCOOP_STEP: boss defeat ends stage=True",
+        "SWARM_BOSSCOOP_TEST: PASS role=host"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "boss-coop",
+      "role": "client",
+      "exit": 0,
+      "results": [
+        "SWARM_BOSSCOOP_STEP: connected=True",
+        "SWARM_BOSSCOOP_STEP: run replicated=True",
+        "SWARM_BOSSCOOP_STEP: discovery replicated=True",
+        "SWARM_BOSSCOOP_STEP: remote console interaction=True",
+        "SWARM_BOSSCOOP_STEP: vote replicated=True",
+        "SWARM_BOSSCOOP_STEP: fight replicated=True",
+        "SWARM_BOSSCOOP_STEP: victory replicated=True",
+        "SWARM_BOSSCOOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "shared-combat",
+      "role": "host",
+      "exit": 0,
+      "results": [
+        "SWARM_COOP_TRACE: slam damages every player in its circle=True",
+        "SWARM_COOP_TRACE: projectile damages first struck player only=True",
+        "SWARM_COOP_TRACE: shared combat and collection=True",
+        "SWARM_COOP_TRACE: party waits for remote choice=True",
+        "SWARM_COOP_TRACE: independent choices and remote rerolls=True",
+        "SWARM_COOP_TRACE: both players fire=True",
+        "SWARM_COOP_TRACE: party resumes=True",
+        "SWARM_COOP_TRACE: line colors survive snapshot capture=True",
+        "SWARM_COOP_TRACE: individual down state=True",
+        "SWARM_COOP_TRACE: wave break revives remote=True",
+        "SWARM_COOP_TRACE: offline restoration=True",
+        "SWARM_COOP_TEST: PASS role=host"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "shared-combat",
+      "role": "client",
+      "exit": 0,
+      "results": [
+        "SWARM_COOP_TRACE: receives authoritative state=True",
+        "SWARM_COOP_TRACE: receives shared visuals=True",
+        "SWARM_COOP_TRACE: same shared XP and level=True",
+        "SWARM_COOP_TRACE: invalid choice rejected=True",
+        "SWARM_COOP_TRACE: duplicate choice rejected=True",
+        "SWARM_COOP_TRACE: persistent range belongs to local player only=True",
+        "SWARM_COOP_TRACE: replicated revive=True",
+        "SWARM_COOP_TRACE: host stop clears client world=True",
+        "SWARM_COOP_TRACE: offline restoration=True",
+        "SWARM_COOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    }
+  ],
+  "six-player-results.json": [
+    {
+      "instance": 0,
+      "exit": 0,
+      "results": [
+        "SWARM_COOP_TEST: PASS role=host"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 1,
+      "exit": 0,
+      "results": [
+        "SWARM_COOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 2,
+      "exit": 0,
+      "results": [
+        "SWARM_COOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 3,
+      "exit": 0,
+      "results": [
+        "SWARM_COOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 4,
+      "exit": 0,
+      "results": [
+        "SWARM_COOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 5,
+      "exit": 0,
+      "results": [
+        "SWARM_COOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    }
+  ]
+}

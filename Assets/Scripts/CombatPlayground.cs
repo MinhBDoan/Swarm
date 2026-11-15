@@ -21,7 +21,7 @@ namespace Swarm
         }
         public bool BonusUpgrade { get; private set; }
         public static CombatPlayground Instance { get; private set; }
-        public static bool BlocksInput => Instance && Instance.Running && (Instance.ChoosingUpgrade || Instance.Health <= 0 || Instance.Won || Instance.PartyPaused);
+        public static bool BlocksInput => Instance && Instance.Running && (Instance.LocalMenuOpen || Instance.ChoosingUpgrade || Instance.Health <= 0 || Instance.Won || Instance.PartyPaused);
         public bool Won { get; private set; }
         public int Wave { get; private set; }
         public bool Resting { get; private set; }
@@ -205,6 +205,7 @@ namespace Swarm
             if (!Running) return;
             if (Input.GetKeyDown(KeyCode.Y)) ReadyForBoss();
             if (NetworkActive) { UpdateParty(); return; }
+            if (LocalMenuOpen) return;
             if (ChoosingUpgrade && Health > 0 && !Won)
             {
                 for (int i=0; i<choices.Count; i++)
@@ -861,7 +862,7 @@ namespace Swarm
                 default: return $"Explosive hits {BlastRank+1}/3\nEach hit blasts nearby enemies for 50% damage. Radius {2.5f+.6f*BlastRank:0.0}m.";
             }
         }
-        void CaptureMouse() { if (NetworkActive && contextId != NetworkManager.Singleton.LocalClientId) return; Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
+        void CaptureMouse() { if (LocalMenuOpen) return; if (NetworkActive && contextId != NetworkManager.Singleton.LocalClientId) return; Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
         void ReleaseMouse() { if (NetworkActive && contextId != NetworkManager.Singleton.LocalClientId) return; Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
         void OnGUI()
         {
@@ -873,6 +874,7 @@ namespace Swarm
             if (!Running) { DrawPracticeCombatMenu(); return; }
             // Draw the core combat HUD before optional world labels.
             DrawCombatHud();
+            if (BlocksInput) return; // Keep world labels behind menus and upgrade cards.
             if (Camera.main && player)
             {
                 int nearby=CacheState==CacheChallengeState.Active ? cacheIndex : NearestCacheIndex();

@@ -53,6 +53,8 @@ namespace Swarm
 
             hudWaveLine.text=CombatWaveTitle();
             hudWaveDetail.text=CombatWaveDetail();
+            hudHeader.style.borderTopColor=IsAreaOvertime ? new Color(1,.35f,.18f) : HudCyan;
+            hudWaveLine.style.color=IsAreaOvertime ? new Color(1,.5f,.3f) : Color.white;
             hudMoneyLine.text=$"PARTY MONEY  {SharedMoney:N0}";
             Color healthColor=Health>30 ? new Color(.35f,.9f,.5f) : new Color(1,.35f,.3f);
             hudHealthLine.text=$"{Mathf.CeilToInt(Health)} HP     LEVEL {Level}";
