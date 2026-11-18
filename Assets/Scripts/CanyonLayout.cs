@@ -5,8 +5,8 @@ namespace Swarm
     public static class CanyonLayout
     {
         public static readonly Vector3 PumpCenter=new Vector3(-300,6,350);
-        public static readonly Vector3 BossConsole=PumpCenter+new Vector3(6,0,-12);
-        public static readonly Vector3 BossSpawn=PumpCenter+new Vector3(6,0,22);
+        public static Vector3 BossConsole=PumpCenter+new Vector3(6,0,-12);
+        public static Vector3 BossSpawn=PumpCenter+new Vector3(6,0,22);
         // Route points describe floor heights; every connection supports ordinary walking.
         public static readonly Vector3[] StationPumpRoute={new Vector3(-46,0,650),new Vector3(-95,2,650),new Vector3(-150,10,610),new Vector3(-210,12,540),new Vector3(-280,6,460),new Vector3(-300,6,398)};
         public static readonly Vector3[] PumpBasinRoute={new Vector3(-300,6,302),new Vector3(-300,12,270),new Vector3(-250,10,210),new Vector3(-190,2,160),new Vector3(-150,0,100),new Vector3(-85,0,20),new Vector3(-29,0,20)};
@@ -32,7 +32,11 @@ namespace Swarm
             p.y=height; return p;
         }
         public static Vector3 DownloadCenter => StationPoint(0,12,42);
-        public static readonly Vector3[] DownloadCenters={new Vector3(12,0,-5),new Vector3(-36,-1.9f,342),DownloadCenter,new Vector3(23,7,53),StationPoint(-30,8,0)};
+        public static readonly Vector3[] DownloadCenters={new Vector3(12,0,-5),new Vector3(-36,-1.9f,342),DownloadCenter,new Vector3(23,7,53),StationPoint(-30,8,0),new Vector3(-100,-2.9f,235),new Vector3(-170,-4,405),new Vector3(-115,-2.4f,530)};
+        public static int DownloadCount => DownloadCenters.Length;
+        static readonly int[] DownloadTiers={0,1,2,3,4,1,2,3};
+        public static int DownloadTierIndex(int terminal) => DownloadTiers[terminal];
+        public static float DownloadDuration(int terminal) => DownloadSeconds[DownloadTierIndex(terminal)];
         public static readonly float[] DownloadSeconds={10,15,20,30,40};
         public const float DownloadRadius=3.5f;
         public static Vector3 CachePosition => new Vector3(23,7.75f,46);
