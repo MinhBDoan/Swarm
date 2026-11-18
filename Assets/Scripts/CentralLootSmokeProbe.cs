@@ -33,7 +33,7 @@ namespace Swarm
             foreach(int index in CentralCrates)
             {
                 Vector3 floor=CombatPlayground.MoneyCrateFloors[index];
-                bool ground=Physics.Raycast(floor+Vector3.up*10,out var hit,15,1<<0);
+                bool ground=Physics.Raycast(floor+Vector3.up*10,Vector3.down,out var hit,15,1<<0);
                 Check(ground && Mathf.Abs(hit.point.y-floor.y)<.15f,"authored chest floor "+index);
                 bool nav=NavMesh.SamplePosition(floor,out var navHit,2,NavMesh.AllAreas);
                 Check(nav && Vector3.Distance(navHit.position,floor)<1.5f,"reachable chest floor "+index);

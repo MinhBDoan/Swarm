@@ -16,7 +16,7 @@ Open the scene, enter Play, click the Game view, and press **F** to start combat
 
 Controls: WASD move; mouse camera; Space jump/bounce or zip exit; Ctrl/C slide or zip drop; E interact/grab zip; Escape release cursor; R reset position; 1/2/3 choose upgrade; T reroll; X skip. Follow in-game prompts where interactions compete. R is a prototype aid.
 
-For two local instances, use editor plus a standalone build: Host in one, Join `127.0.0.1` in the other. Join all players before starting combat. The host starts/stops/retries. Current combined playtest: `Builds/Swarm-TerrainTimerPause/Swarm.exe`. The older SentinelMoves build is retained as a previous checkpoint.
+For two local instances, use editor plus a standalone build: Host in one, Join `127.0.0.1` in the other. Join all players before starting combat. The host starts/stops/retries. Latest map/reward pass: `Builds/Swarm-CentralSlopesLoot/Swarm.exe`; see [central slopes and chests](CENTRAL_SLOPES_LOOT_PLAYTEST.md). Previous combined playtest: `Builds/Swarm-TerrainTimerPause/Swarm.exe`. The older SentinelMoves build is retained as a previous checkpoint.
 
 ## Implemented systems and evidence
 
@@ -27,7 +27,7 @@ For two local instances, use editor plus a standalone build: Host in one, Join `
 | Combat | Automatic weapons, XP pickup attraction, level-ups, damage/defeat/retry | `CombatPlayground.cs`; player accepted the basic movement/combat combination. |
 | Builds | Four slots; gun plus four optional weapons; rank limits, passives, skips and rerolls | `CombatLoadout.cs`, `BoltUpgrade.cs`; balance is provisional. |
 | Rarity | Common, Uncommon, Rare, Epic, Legendary; stats plus critical/shockwave mechanics | `CombatRarity.cs`; rarity rules need review, not an assumed finalized progression curve. |
-| Economy/objectives | Shared wallet, fixed-price Rare/Epic crates, salvage interactions, guard caches, five download tiers | `CombatEconomy.cs`, `CombatDownload.cs`, `CombatJourney.cs`; random crate pricing is not implemented. |
+| Economy/objectives | Shared wallet, seven fixed-price Rare/Epic crates, salvage interactions, guard caches, five download tiers | `CombatEconomy.cs`, `CombatDownload.cs`, `CombatJourney.cs`; random crate pricing is not implemented. |
 | Downloads | Automatic zone start, extra occupants add 10% each up to +50%, 2-second empty grace then 2 percentage points/second decay; calls packs while occupied | `CombatDownload.cs`; rewards currently go to the party, not just finish-line occupants. |
 | Enemies | Chaser, Runner, Spitter, Charger; navigation and nearby reachable spawning | `CombatPlayground.cs`, `CombatCharger.cs`; primitive runtime visuals. |
 | Difficulty | Pack sizes, live caps, spawn pacing, health/damage tuning depend on time and party size | Inspect current formulas before balancing; old README health percentages are superseded. No loadout-based scaling is intended. |

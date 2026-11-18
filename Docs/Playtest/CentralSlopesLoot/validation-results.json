@@ -1,0 +1,183 @@
+{
+  "solo-results.json": [
+    {
+      "test": "grounded-path",
+      "exit": 0,
+      "seconds": 5.0,
+      "results": [
+        "SWARM_GROUNDED_PATH_TRACE: section=0 side=-1 slope=True walk=True nav=True crest=-2.91 highest=-1.83 end=(-115.00, -1.83, 382.69)",
+        "SWARM_GROUNDED_PATH_TRACE: section=0 side=1 slope=True walk=True nav=True crest=-2.91 highest=-1.74 end=(-115.00, -1.82, 383.67)",
+        "SWARM_GROUNDED_PATH_TRACE: section=1 side=-1 slope=True walk=True nav=True crest=-0.87 highest=0.48 end=(-188.00, 0.22, 355.01)",
+        "SWARM_GROUNDED_PATH_TRACE: section=1 side=1 slope=True walk=True nav=True crest=-0.87 highest=0.20 end=(-188.00, 0.20, 355.89)",
+        "SWARM_GROUNDED_PATH_TRACE: section=2 side=-1 slope=True walk=True nav=True crest=2.04 highest=3.12 end=(-219.00, 3.12, 349.65)",
+        "SWARM_GROUNDED_PATH_TRACE: section=2 side=1 slope=True walk=True nav=True crest=2.04 highest=3.12 end=(-219.00, 3.12, 350.35)",
+        "SWARM_GROUNDED_PATH_TEST: PASS noMiddleCliffs=True"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "central-terrain",
+      "exit": 0,
+      "seconds": 5.3,
+      "results": [
+        "SWARM_CENTRAL_TERRAIN_TRACE: patch=0 walk=True along=35.1 rise=4.2 slide=True peak=16.7",
+        "SWARM_CENTRAL_TERRAIN_TRACE: patch=1 walk=True along=30.2 rise=3.8 slide=True peak=14.6",
+        "SWARM_CENTRAL_TERRAIN_TRACE: patch=2 walk=True along=32.0 rise=3.7 slide=True peak=13.8",
+        "SWARM_CENTRAL_TERRAIN_TEST: PASS enemyAccess=True"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "economy",
+      "exit": 0,
+      "seconds": 1.7,
+      "results": [
+        "SWARM_ECONOMY_TEST: PASS distance=True insufficient=True salvage=True rare=True duplicate=True bounty=True epic=True reset=True"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "central-loot",
+      "exit": 0,
+      "seconds": 1.7,
+      "results": [
+        "SWARM_CENTRALLOOT_TEST: PASS role=solo"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "loop",
+      "exit": 0,
+      "seconds": 22.8,
+      "results": [
+        "SWARM_LOOP_TEST: PASS navigation=True enemySpawn=True areaLabels=True sealedEdges=True"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "pursuit",
+      "exit": 0,
+      "seconds": 44.7,
+      "results": [
+        "SWARM_FLATS_PURSUIT_TEST: PASS"
+      ],
+      "exceptions": []
+    }
+  ],
+  "coop-results.json": [
+    {
+      "test": "central-loot",
+      "role": "host",
+      "exit": 0,
+      "results": [
+        "SWARM_CENTRALLOOT_STEP: party choices resolved 5=True",
+        "SWARM_CENTRALLOOT_STEP: remote central purchase 6=True",
+        "SWARM_CENTRALLOOT_STEP: remote single shared deduction 6=True",
+        "SWARM_CENTRALLOOT_STEP: bonus choice opened 6=True",
+        "SWARM_CENTRALLOOT_STEP: matching tier 6=True",
+        "SWARM_CENTRALLOOT_STEP: matching tier 6=True",
+        "SWARM_CENTRALLOOT_STEP: matching tier 6=True",
+        "SWARM_CENTRALLOOT_STEP: party choices resolved 6=True",
+        "SWARM_CENTRALLOOT_STEP: wallet and purchases reset=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 0=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 1=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 2=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 3=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 4=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 5=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 6=True",
+        "SWARM_CENTRALLOOT_STEP: salvage reset 0=True",
+        "SWARM_CENTRALLOOT_STEP: salvage reset 1=True",
+        "SWARM_CENTRALLOOT_STEP: salvage reset 2=True",
+        "SWARM_CENTRALLOOT_STEP: salvage reset 3=True",
+        "SWARM_CENTRALLOOT_STEP: salvage reset 4=True",
+        "SWARM_CENTRALLOOT_STEP: salvage reset 5=True",
+        "SWARM_CENTRALLOOT_STEP: client checked reset and left=True",
+        "SWARM_CENTRALLOOT_TEST: PASS role=host"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "central-loot",
+      "role": "client",
+      "exit": 0,
+      "results": [
+        "SWARM_CENTRALLOOT_STEP: party choice received 6=True",
+        "SWARM_CENTRALLOOT_STEP: expanded opened flags replicated 6=True",
+        "SWARM_CENTRALLOOT_STEP: bonus choice opened 6=True",
+        "SWARM_CENTRALLOOT_STEP: matching tier 6=True",
+        "SWARM_CENTRALLOOT_STEP: matching tier 6=True",
+        "SWARM_CENTRALLOOT_STEP: matching tier 6=True",
+        "SWARM_CENTRALLOOT_STEP: party resumed 6=True",
+        "SWARM_CENTRALLOOT_STEP: run stopped=True",
+        "SWARM_CENTRALLOOT_STEP: new run replicated=True",
+        "SWARM_CENTRALLOOT_STEP: wallet and purchases reset=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 0=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 1=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 2=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 3=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 4=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 5=True",
+        "SWARM_CENTRALLOOT_STEP: crate reset 6=True",
+        "SWARM_CENTRALLOOT_STEP: salvage reset 0=True",
+        "SWARM_CENTRALLOOT_STEP: salvage reset 1=True",
+        "SWARM_CENTRALLOOT_STEP: salvage reset 2=True",
+        "SWARM_CENTRALLOOT_STEP: salvage reset 3=True",
+        "SWARM_CENTRALLOOT_STEP: salvage reset 4=True",
+        "SWARM_CENTRALLOOT_STEP: salvage reset 5=True",
+        "SWARM_CENTRALLOOT_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    }
+  ],
+  "economy-six-results.json": [
+    {
+      "instance": 0,
+      "exit": 0,
+      "results": [
+        "SWARM_ECONOMYCOOP_TEST: PASS role=host"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 1,
+      "exit": 0,
+      "results": [
+        "SWARM_ECONOMYCOOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 2,
+      "exit": 0,
+      "results": [
+        "SWARM_ECONOMYCOOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 3,
+      "exit": 0,
+      "results": [
+        "SWARM_ECONOMYCOOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 4,
+      "exit": 0,
+      "results": [
+        "SWARM_ECONOMYCOOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 5,
+      "exit": 0,
+      "results": [
+        "SWARM_ECONOMYCOOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    }
+  ]
+}

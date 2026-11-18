@@ -30,3 +30,5 @@ These documents separate intended design from implementation. Code does not sile
 No additional agents were started while drafting this pack.
 
 Repository setup and task naming: [Version control policy](VERSION_CONTROL.md).
+
+Latest map pass: [Grounded middle path and central chests](CENTRAL_SLOPES_LOOT_PLAYTEST.md).

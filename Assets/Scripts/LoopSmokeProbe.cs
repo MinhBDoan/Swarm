@@ -39,6 +39,23 @@ namespace Swarm
         {
             var floor=GameObject.Find(route+" / continuous floor").GetComponent<MeshCollider>();
             Vector3[] edge=floor.sharedMesh.vertices;
+            if (route=="Central cut" && edge.Length>20)
+            {
+                // Grounded terrain has ten cross-section columns, including its sloped shoulders.
+                // Verify each outer toe reaches supporting ground instead of assuming two strip edges.
+                bool grounded=true;
+                const int stride=10;
+                for(int row=1;row<edge.Length/stride-1;row++)
+                foreach(int column in new[]{0,stride-1})
+                {
+                    Vector3 toe=edge[row*stride+column];
+                    Vector3 crest=(edge[row*stride+4]+edge[row*stride+5])*.5f;
+                    Vector3 outward=Vector3.ProjectOnPlane(toe-crest,Vector3.up).normalized;
+                    if(!Physics.Raycast(toe+outward*3+Vector3.up,Vector3.down,7,1<<0))
+                    { grounded=false; Debug.Log($"SWARM_LOOP_EDGE_GAP: grounded cut toe {toe}"); }
+                }
+                return grounded;
+            }
             bool covered=true;
             for (int segment=0;segment<edge.Length/2-1;segment++)
             for (int side=0;side<2;side++)

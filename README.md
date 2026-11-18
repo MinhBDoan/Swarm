@@ -1,6 +1,9 @@
 # Swarm movement prototype
 
-Latest combined playtest: **Builds/Swarm-TerrainTimerPause/Swarm.exe**. See
+Latest map/reward playtest: **Builds/Swarm-CentralSlopesLoot/Swarm.exe**. See
+[the central slopes and chests guide](Docs/Planning/CENTRAL_SLOPES_LOOT_PLAYTEST.md).
+
+Previous combined playtest: **Builds/Swarm-TerrainTimerPause/Swarm.exe**. See
 [the November 15 playtest guide](Docs/Planning/FIRST_BATCH_PLAYTEST.md) for terrain,
 countdown/overtime, whole-party menus, and validation details.
 

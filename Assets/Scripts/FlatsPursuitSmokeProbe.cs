@@ -18,6 +18,11 @@ namespace Swarm
                 new GameObject("Flats pursuit probe").AddComponent<FlatsPursuitSmokeProbe>();
         }
 
+        static Vector3 SupportingFloor(Vector3 point)
+        {
+            return Physics.Raycast(point+Vector3.up*30,Vector3.down,out var hit,60,1<<0) ? hit.point : point;
+        }
+
         IEnumerator Start()
         {
             Application.targetFrameRate=120;
@@ -34,13 +39,14 @@ namespace Swarm
             for (int i=0;i<starts.Length;i++)
             {
                 combat.Begin();
-                motor.SetSpawn(targets[i]+Vector3.up*1.1f);
-                bool spawned=combat.SpawnEnemy(starts[i]);
+                Vector3 target=SupportingFloor(targets[i]);
+                motor.SetSpawn(target+Vector3.up*1.1f);
+                bool spawned=combat.SpawnEnemy(SupportingFloor(starts[i]));
                 var agents=FindObjectsOfType<NavMeshAgent>();
                 float deadline=Time.realtimeSinceStartup+28;
-                while (spawned && Vector3.Distance(agents[0].transform.position,targets[i])>3 &&
+                while (spawned && Vector3.Distance(agents[0].transform.position,target)>3 &&
                     Time.realtimeSinceStartup<deadline) yield return null;
-                bool followed=spawned && Vector3.Distance(agents[0].transform.position,targets[i])<3;
+                bool followed=spawned && Vector3.Distance(agents[0].transform.position,target)<3;
                 passed &= followed;
                 Debug.Log($"SWARM_FLATS_PURSUIT: entrance={i} spawned={spawned} followed={followed} position={(spawned ? agents[0].transform.position : Vector3.zero)}");
             }
@@ -50,7 +56,7 @@ namespace Swarm
             var locations=new[] {new Vector3(-145,-4,375),new Vector3(-118,-1,120),new Vector3(-80,0,590),new Vector3(-185,-3.7f,250)};
             foreach (var point in locations)
             {
-                motor.SetSpawn(point+Vector3.up*1.1f);
+                motor.SetSpawn(SupportingFloor(point)+Vector3.up*1.1f);
                 bool spawned=(bool)spawner.Invoke(combat,new object[]{false});
                 passed &= spawned;
                 Debug.Log($"SWARM_FLATS_LOCAL_SPAWN: position={point} spawned={spawned}");
