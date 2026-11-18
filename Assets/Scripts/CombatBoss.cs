@@ -13,6 +13,47 @@ namespace Swarm
         bool localBossReady;
         Enemy consoleSentinel;
         public const float BossInteractRange = 5;
+        readonly Dictionary<Transform,Vector3> bossPropOffsets = new Dictionary<Transform,Vector3>();
+        public string BossLocationName => CanyonLayout.Area(CanyonLayout.BossConsole).Split('/')[0].Trim();
+
+        // Run-layout application calls this on host and clients. Gameplay already
+        // reads the live console/spawn coordinates; relocate the authored props too.
+        // Offsets are captured once against the authored yard site, never against
+        // the previous randomized location, so retries/repeated snapshots cannot drift.
+        public void RefreshBossLocation()
+        {
+            Vector3 authored = CanyonLayout.PumpCenter + new Vector3(6,0,-12);
+            const string sign = "SENTINEL CONSOLE / E TO START";
+            var props = new List<Transform>();
+            var rings = new List<LineRenderer>();
+            foreach (var prop in FindObjectsOfType<Transform>(true))
+            {
+                if (!prop.gameObject.scene.IsValid()) continue;
+                if (prop.name == "Sentinel activation console" || prop.name == sign || prop.name == "Loop sign / "+sign)
+                {
+                    props.Add(prop);
+                    if (!bossPropOffsets.ContainsKey(prop)) bossPropOffsets[prop] = prop.position-authored;
+                }
+                else if (prop.name == "Sentinel interaction ring")
+                {
+                    var ring = prop.GetComponent<LineRenderer>();
+                    if (ring) rings.Add(ring);
+                }
+            }
+            // Capture every original position before moving any parent transform.
+            foreach (var prop in props) prop.position = CanyonLayout.BossConsole+bossPropOffsets[prop];
+            foreach (var ring in rings)
+            {
+                ring.useWorldSpace = true;
+                ring.loop = true;
+                for (int i=0;i<ring.positionCount;i++)
+                {
+                    float angle = i*Mathf.PI*2/Mathf.Max(1,ring.positionCount);
+                    ring.SetPosition(i,CanyonLayout.BossConsole+Vector3.up*.09f+
+                        new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle))*BossInteractRange);
+                }
+            }
+        }
 
         void ResetBoss()
         {
@@ -110,7 +151,7 @@ namespace Swarm
                 {
                     bossPhase = BossPhase.Discovered;
                     bossVotes.Clear();
-                    Notice = "Sentinel vote expired. Use the pumping yard console to try again.";
+                    Notice = $"Sentinel vote expired. Use the {BossLocationName.ToLowerInvariant()} console to try again.";
                 }
             }
             if (bossPhase != BossPhase.Preparing) return;
@@ -143,7 +184,7 @@ namespace Swarm
             var color = new Color(1,.62f,.24f);
             var rect = new Rect(width-330,22,308,143);
             HudPanelBox(rect,color);
-            HudLabel(new Rect(rect.x+16,35,276,26),"SENTINEL / PUMPING YARD",hudSmall,color);
+            HudLabel(new Rect(rect.x+16,35,276,26),"SENTINEL / "+BossLocationName,hudSmall,color);
             string detail;
             switch (bossPhase)
             {
@@ -161,7 +202,7 @@ namespace Swarm
                 default:
                     detail = BossConsoleInReach ? (NetworkActive ? "E: Propose Sentinel fight" : "E: Summon Sentinel") : "Enter the orange console ring";
                     if (player && !NearBossConsole(player,22))
-                        detail = $"Console {Vector3.Distance(player.transform.position,CanyonLayout.BossConsole):0} m away\nUse a signed route to the yard";
+                        detail = $"Console {Vector3.Distance(player.transform.position,CanyonLayout.BossConsole):0} m away\nLocation: {BossLocationName.ToLowerInvariant()}";
                     break;
             }
             HudLabel(new Rect(rect.x+16,72,276,70),detail,hudText);
