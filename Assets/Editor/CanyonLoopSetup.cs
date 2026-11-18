@@ -20,6 +20,7 @@ namespace Swarm.Editor
             Corridor(root,"Return gully",CanyonLayout.PumpBasinRoute,24,38,24,sand,rock,mine);
             // Build the flats first: the cut shoulders sample this exact floor collider.
             CanyonCenterSetup.Install(root,sand,rock,route);
+            EasternGroundApron(root,sand);
             GroundedCut(root,sand,route);
 
             // Replace only the basin's boundary: preserve its existing upper routes.
@@ -79,11 +80,62 @@ namespace Swarm.Editor
             Sign(root,"NORTH: DRILL / EAST: SHELTER / SOUTH: BASIN",c+new Vector3(30,4,9),Vector3.left,metal);
         }
 
+        static void EasternGroundApron(Transform root,Material sand)
+        {
+            var flats=GameObject.Find("Central flats floor").GetComponent<Collider>();
+            var trail=GameObject.Find("Continuous lower trail").GetComponent<Collider>();
+            var vertices=new List<Vector3>();var triangles=new List<int>();
+            const int rows=8,columns=6;
+            for(int row=0;row<=rows;row++)
+            {
+                float z=Mathf.Lerp(368,416,(float)row/rows);
+                float east=-32,eastHeight=1;
+                // Find the existing trail's western lip at this row, then overlap inside it.
+                for(float x=-65;x<=20;x+=.5f)
+                    if(trail.Raycast(new Ray(new Vector3(x,50,z),Vector3.down),out var edge,100))
+                    {east=x+3;eastHeight=edge.point.y;break;}
+                if(trail.Raycast(new Ray(new Vector3(east,50,z),Vector3.down),out var endpoint,100))eastHeight=endpoint.point.y;
+                flats.Raycast(new Ray(new Vector3(-82,50,z),Vector3.down),out var floor,100);
+                for(int col=0;col<=columns;col++)
+                {
+                    float x=Mathf.Lerp(-82,east,(float)col/columns);
+                    float t=Mathf.Clamp01(Mathf.InverseLerp(-65,east,x));
+                    float height=Mathf.Lerp(floor.point.y,eastHeight,t)+.025f;
+                    vertices.Add(new Vector3(x,height,z));
+                    if(row==0 || col==0)continue;
+                    int a=(row-1)*(columns+1)+col-1,b=a+columns+1;
+                    triangles.AddRange(new[]{a,b,a+1,a+1,b,b+1});
+                }
+            }
+            var mesh=new Mesh{name="Central Cut East Ground Apron"};
+            mesh.SetVertices(vertices);mesh.SetTriangles(triangles,0);mesh.RecalculateNormals();mesh.RecalculateBounds();
+            const string path="Assets/Geometry/CentralCutEastApron.asset";
+            var saved=AssetDatabase.LoadAssetAtPath<Mesh>(path);
+            if(saved){EditorUtility.CopySerialized(mesh,saved);Object.DestroyImmediate(mesh);}
+            else{AssetDatabase.CreateAsset(mesh,path);saved=mesh;}
+            var obj=new GameObject("Central cut / east ground apron",typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));
+            obj.transform.SetParent(root);obj.GetComponent<MeshFilter>().sharedMesh=saved;
+            obj.GetComponent<MeshRenderer>().sharedMaterial=sand;obj.GetComponent<MeshCollider>().sharedMesh=saved;
+            // Open the old low flats bank only where the apron supplies real ground.
+            foreach(var bank in root.GetComponentsInChildren<BoxCollider>())
+            {
+                if(bank.name!="Outer rock bank" || bank.transform.position.x< -70)continue;
+                if(Mathf.Abs(bank.transform.position.z-395)<1)Object.DestroyImmediate(bank.gameObject);
+                else if(Mathf.Abs(bank.transform.position.z-352.5f)<1)
+                {
+                    Vector3 from=new Vector3(-62,-4,330),to=new Vector3(-62.89f,-4,370);
+                    Vector3 position=(from+to)*.5f;position.y=bank.transform.position.y;
+                    bank.transform.position=position;bank.transform.rotation=Quaternion.LookRotation(to-from);
+                    Vector3 size=bank.transform.localScale;size.z=Vector3.Distance(from,to)+3;bank.transform.localScale=size;
+                }
+            }
+        }
+
         static void GroundedCut(Transform root,Material sand,Material marker)
         {
             var points=CanyonLayout.MiddleRoute;
             var ground=new List<Collider>();
-            foreach (string name in new[] {"Central flats floor","Continuous lower trail"})
+            foreach (string name in new[] {"Central flats floor","Continuous lower trail","Central cut / east ground apron"})
             {
                 var obj=GameObject.Find(name);
                 if (obj && obj.GetComponent<Collider>()) ground.Add(obj.GetComponent<Collider>());
