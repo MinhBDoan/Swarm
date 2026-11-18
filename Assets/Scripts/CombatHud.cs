@@ -237,8 +237,8 @@ namespace Swarm
             if(ShowSupplyObjective){DrawSupplyObjective(width);return;}
             if (ShowDownloadObjective)
             {
-                var downloadRect=new Rect(width-330,22,308,190); var tier=(UpgradeRarity)DownloadViewIndex; var tierColor=RarityColor(tier); HudPanelBox(downloadRect,tierColor);
-                HudLabel(new Rect(downloadRect.x+16,35,276,26),$"{tier.ToString().ToUpperInvariant()} DOWNLOAD / {CanyonLayout.DownloadSeconds[DownloadViewIndex]:0}s",hudSmall,tierColor);
+                var downloadRect=new Rect(width-330,22,308,190); var tier=(UpgradeRarity)CanyonLayout.DownloadTierIndex(DownloadViewIndex); var tierColor=RarityColor(tier); HudPanelBox(downloadRect,tierColor);
+                HudLabel(new Rect(downloadRect.x+16,35,276,26),$"{tier.ToString().ToUpperInvariant()} DOWNLOAD / {CanyonLayout.DownloadDuration(DownloadViewIndex):0}s",hudSmall,tierColor);
                 HudLabel(new Rect(downloadRect.x+16,72,276,55),DownloadStatus(),hudText);
                 HudBar(new Rect(downloadRect.x+16,137,276,12),downloadPercents[DownloadViewIndex]/100,tierColor);
                 HudLabel(new Rect(downloadRect.x+16,165,276,36),$"100%: {tier} choice for everyone",hudSmall,HudMuted);

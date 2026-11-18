@@ -6,8 +6,8 @@ namespace Swarm
     public partial class CombatPlayground
     {
         public enum DownloadPhase { Available, Active, Completed }
-        readonly DownloadPhase[] downloadStates=new DownloadPhase[5];
-        readonly float[] downloadPercents=new float[5];
+        readonly DownloadPhase[] downloadStates=new DownloadPhase[CanyonLayout.DownloadCount];
+        readonly float[] downloadPercents=new float[CanyonLayout.DownloadCount];
         int downloadIndex=2;
         public DownloadPhase DownloadState { get=>downloadStates[downloadIndex]; private set=>downloadStates[downloadIndex]=value; }
         public float DownloadProgress { get=>downloadPercents[downloadIndex]; private set=>downloadPercents[downloadIndex]=value; }
@@ -17,10 +17,16 @@ namespace Swarm
         public DownloadPhase DownloadStateAt(int index) => downloadStates[index];
         public float DownloadProgressAt(int index) => downloadPercents[index];
         Vector3 SelectedDownloadCenter => CanyonLayout.DownloadCenters[downloadIndex];
+        // Relocate scene-owned props only after the shared layout changes. They are not
+        // combat snapshot entities, so clients retain one authoritative scene copy.
+        public void RefreshDownloadLocations()
+        {
+            foreach(var terminal in FindObjectsOfType<DownloadTerminal>()) terminal.RefreshLocation();
+        }
         int NearestDownloadIndex()
         {
             int nearest=0; float distance=float.MaxValue;
-            for(int i=0;i<5;i++) { float next=(player.transform.position-CanyonLayout.DownloadCenters[i]).sqrMagnitude; if(next<distance) {nearest=i;distance=next;} }
+            for(int i=0;i<CanyonLayout.DownloadCount;i++) { float next=(player.transform.position-CanyonLayout.DownloadCenters[i]).sqrMagnitude; if(next<distance) {nearest=i;distance=next;} }
             return nearest;
         }
         int DownloadViewIndex => DownloadEngaged ? downloadIndex : NearestDownloadIndex();
@@ -33,13 +39,13 @@ namespace Swarm
         readonly List<Enemy> downloadEnemies=new List<Enemy>();
         void ResetDownload()
         {
-            downloadIndex=2; for(int i=0;i<5;i++) {downloadStates[i]=DownloadPhase.Available;downloadPercents[i]=0;}
+            downloadIndex=2; for(int i=0;i<CanyonLayout.DownloadCount;i++) {downloadStates[i]=DownloadPhase.Available;downloadPercents[i]=0;}
             DownloadOccupants=DownloadEnemiesSpawned=0;
             downloadEmptyClock=downloadSpawnClock=0; downloadEnemies.Clear();
         }
         public static bool InsideDownloadZone(MomentumMotor motor,int terminal=2)
         {
-            if (!motor || motor.IsZiplining) return false;
+            if (!motor || motor.IsZiplining || terminal<0 || terminal>=CanyonLayout.DownloadCount) return false;
             Vector3 delta=motor.transform.position-CanyonLayout.DownloadCenters[terminal];
             return new Vector2(delta.x,delta.z).sqrMagnitude<=CanyonLayout.DownloadRadius*CanyonLayout.DownloadRadius && delta.y>=-.3f && delta.y<=3.2f;
         }
@@ -62,7 +68,7 @@ namespace Swarm
             DownloadOccupants=occupants;
             downloadEmptyClock=0;
             downloadSpawnClock=1.5f;
-            Notice=$"{(UpgradeRarity)terminal} download started. Stay inside the circle.";
+            Notice=$"{(UpgradeRarity)CanyonLayout.DownloadTierIndex(terminal)} download started. Stay inside the circle.";
         }
         void TickDownload(float dt)
         {
@@ -84,7 +90,7 @@ namespace Swarm
             if (DownloadOccupants>0)
             {
                 downloadEmptyClock=0;
-                DownloadProgress=Mathf.Min(100,DownloadProgress+dt*(100/CanyonLayout.DownloadSeconds[downloadIndex])*DownloadSpeedMultiplier);
+                DownloadProgress=Mathf.Min(100,DownloadProgress+dt*(100/CanyonLayout.DownloadDuration(downloadIndex))*DownloadSpeedMultiplier);
             }
             else
             {
@@ -95,8 +101,8 @@ namespace Swarm
             {
                 DownloadState=DownloadPhase.Completed;
                 Notice="Download complete! Everyone receives an extra upgrade choice.";
-                if(CoopAuthority) GivePartyDownloadReward((UpgradeRarity)downloadIndex);
-                else QueueBonusUpgrade(downloadIndex);
+                if(CoopAuthority) GivePartyDownloadReward((UpgradeRarity)CanyonLayout.DownloadTierIndex(downloadIndex));
+                else QueueBonusUpgrade(CanyonLayout.DownloadTierIndex(downloadIndex));
                 return;
             }
             if (!AutoSpawn || DownloadOccupants==0) return;

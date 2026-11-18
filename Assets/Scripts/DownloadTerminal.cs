@@ -4,6 +4,9 @@ namespace Swarm
     public class DownloadTerminal : MonoBehaviour
     {
         public int terminalIndex=2;
+        public Transform consoleProp,labelProp;
+        Vector3 cachedCenter;
+        bool sampled;
         LineRenderer boundary,progress;
         Material material;
         readonly Vector3[] innerPoints=new Vector3[97];
@@ -12,12 +15,24 @@ namespace Swarm
             material=new Material(Shader.Find("Sprites/Default"));
             boundary=Line("Download boundary",.1f); progress=Line("Download progress",.16f);
             boundary.loop=true; boundary.positionCount=96;
+            RefreshLocation();
+        }
+        public void RefreshLocation()
+        {
+            if(terminalIndex<0 || terminalIndex>=CanyonLayout.DownloadCount) return;
+            Vector3 center=CanyonLayout.DownloadCenters[terminalIndex];
+            if(sampled && (center-cachedCenter).sqrMagnitude<.000001f) return;
+            cachedCenter=center;transform.position=center;
+            if(consoleProp)consoleProp.position=center+new Vector3(0,.45f,3);
+            if(labelProp)labelProp.position=center+new Vector3(0,2.7f,4);
+            if(!boundary)return;
             Physics.SyncTransforms();
             for(int i=0;i<97;i++)
             {
                 if(i<96) boundary.SetPosition(i,GroundPoint(i/96f,CanyonLayout.DownloadRadius));
                 innerPoints[i]=GroundPoint(i/96f,CanyonLayout.DownloadRadius-.22f);
             }
+            sampled=true;
         }
         LineRenderer Line(string title,float width)
         {
@@ -48,7 +63,7 @@ namespace Swarm
             var combat=CombatPlayground.Instance;
             bool active=combat && combat.Running && combat.DownloadStateAt(terminalIndex)==CombatPlayground.DownloadPhase.Active;
             bool done=combat && combat.Running && combat.DownloadStateAt(terminalIndex)==CombatPlayground.DownloadPhase.Completed;
-            Color color=CombatPlayground.RarityColor((CombatPlayground.UpgradeRarity)terminalIndex);
+            Color color=CombatPlayground.RarityColor((CombatPlayground.UpgradeRarity)CanyonLayout.DownloadTierIndex(terminalIndex));
             boundary.startColor=boundary.endColor=color;
             float percent=combat && combat.Running ? combat.DownloadProgressAt(terminalIndex) : 0;
             progress.enabled=percent>.01f; int count=Mathf.Max(2,Mathf.CeilToInt(percent*.96f)+1); progress.positionCount=count;
