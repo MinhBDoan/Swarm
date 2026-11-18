@@ -1,6 +1,6 @@
 # Swarm — product requirements
 
-**Status:** review draft v0.7 · November 14, 2026
+**Status:** review draft v0.8 · November 14, 2026
 
 ## Vision
 
@@ -32,7 +32,7 @@ Three areas provide up to 30 minutes of pre-overtime countdown time if every cou
 
 **Confirmed boss timing:** activating the boss does not stop or reset the area countdown, freeze pressure, or end overtime. Waves keep escalating throughout the fight. If the countdown reaches zero during the boss fight, overtime starts; if the boss is activated after expiry, overtime continues escalating. Whole-party upgrade selection still pauses gameplay and the active timer.
 
-**Confirmed menu behavior:** opening an in-game menu pauses gameplay and the active area timer for the whole group. Close/resume only when no player still has a pause-causing menu or unresolved upgrade choice. This overrides the current co-op Escape behavior, which only releases the cursor. The specific menus covered and host/disconnect edge cases must be validated during implementation.
+**Confirmed menu behavior:** opening the ordinary game/Escape menu pauses gameplay and the active area timer for the whole group. Shop browsing is an explicit exception: it affects only the browsing player and does not pause combat or the area timer. Close/resume only when no player still has a pause-causing menu or unresolved upgrade choice. This overrides the current co-op Escape behavior, which only releases the cursor. The specific menus covered and host/disconnect edge cases must be validated during implementation.
 
 **Confirmed boss duration:** after summoning, a boss remains an encounter until it is killed or the run ends through defeat/exit. There is no separate boss-fight time limit; the area clock and escalating waves still continue except during group pauses.
 
@@ -50,8 +50,8 @@ Three areas provide up to 30 minutes of pre-overtime countdown time if every cou
 | MOV-06 | Confirmed | A well-timed slide hop provides a modest speed advantage. It should be a worthwhile skill without making ordinary movement unusable. Exact tuning remains adjustable. |
 | COOP-01 | Confirmed | Support solo and parties of up to six total players. Players can develop distinct loadouts while sharing the adventure. |
 | COOP-02 | Confirmed | XP is shared; an inefficient build does not reduce that player's XP entitlement. Shared XP level-ups are synchronized group upgrade events, while each player chooses their own upgrade. |
-| COOP-03 | Confirmed | All upgrade award events are group events: shared-XP level-ups, chests, and terminals reward the whole party. Pause gameplay and the active area timer for selection, then resume after all eligible players finish or skip their queued choices; disconnects must not strand the pause. There are no individual-only upgrade rewards. Players still select their own upgrades and maintain independent builds. |
-| COOP-04 | Confirmed | Opening an in-game menu pauses the game and area timer for the entire party. Overlapping menus/upgrade selections must not resume prematurely; disconnecting a paused player must not leave the party permanently paused. |
+| COOP-03 | Confirmed | Shared-XP level-ups, chests, and terminals reward the whole party. Pause gameplay and the active area timer for selection, then resume after all eligible players finish or skip their queued choices; disconnects must not strand the pause. Personal shop purchases are the explicit individual-upgrade exception: they grant only the buyer an upgrade with no party pause. Players select their own upgrades and maintain independent builds. |
+| COOP-04 | Confirmed | Opening the ordinary game/Escape menu pauses the game and area timer for the entire party. Shop browsing is excluded. Overlapping menus/upgrade selections must not resume prematurely; disconnecting a paused player must not leave the party permanently paused. |
 | BUILD-01 | Confirmed | Four weapon slots create meaningful choices. Include the auto gun, boomerang, surrounding area pulse, explosive rockets, and strong piercing bow as the initial set. |
 | BUILD-02 | Confirmed | Support skipping unwanted offers and rarity-based upgrades. Rarity can improve stats or add effects; exact distributions and effect rules remain tuning decisions. |
 | COMBAT-01 | Confirmed | Automatic targeting and firing support movement-focused combat. Enemy roles should be recognizable through appearance and behavior. |
@@ -66,6 +66,8 @@ Three areas provide up to 30 minutes of pre-overtime countdown time if every cou
 | OBJ-02 | Confirmed | Terminals have color-coded reward tiers and tier-dependent times. They call enemy packs while occupied, making the reward a risk decision. |
 | OBJ-03 | Confirmed; pricing details open | Keep shared party money and shared XP. Chests/crates and terminals grant upgrade rewards to the whole group; each player makes their own selection. Paid crates use the shared wallet, and higher prices can offer higher tiers. Chest tiers are randomized. Each tier has a fixed starting price, and chest prices rise as the party buys more chests. Tier probabilities, starting values, growth formula, affected tiers, and purchase-counter reset scope remain open. |
 | BOSS-01 | Confirmed | Include an interactable boss console with a clear activation area and understandable feedback. Players can choose to activate the boss before the 10-minute deadline; overtime pressure makes delaying that choice dangerous. The countdown and wave escalation continue during the boss fight, including overtime if reached. Activating the boss late does not cancel overtime. There is no separate boss timer: fight until the boss is killed or the run ends. |
+| WORLD-05 | Confirmed | Keep terrain/routes/POIs fixed while randomizing chest, terminal, boss-console/arena and shop locations each run. Choose reachable authored candidates with room for the activity. The host chooses one shared layout; it stays fixed during the run and is identical for all party members. |
+| SHOP-01 | Confirmed; prices provisional | Three NPC shops per area. Each has one rarity tier and three personal random offers within that tier. Each player visits independently, buys one upgrade per shop, then that shop closes for that player. Offers remain stable on reopening. Purchasing uses shared money but rewards only the buyer; neither browsing nor buying pauses the fight. Confirmed tiers: Uncommon, Rare, Epic, paid from shared money. Initial prices 15/30/75 remain provisional for balance feedback. |
 | HUD-01 | Confirmed | During combat, persistently show health, XP/level, money, equipped weapons and levels, and relevant objective/boss information at a readable scale. |
 
 ## Prototype policies awaiting explicit long-term approval
@@ -110,6 +112,6 @@ These criteria require player testing as well as automated checks. Total run dur
 1. Does the movement/co-op/adventure balance above match your vision?
 2. Which empty canyon spaces should be filled, reworked, compressed, or removed after a full-route review? Map fleshing-out is the confirmed next milestone.
 3. Exactly when after boss defeat does the area timer end and the transition begin? Menus and upgrade selections pause the whole party and clock; boss combat otherwise leaves both running.
-4. How should queued group rewards interact with downed players and revival? All upgrade sources are party-wide; independent choices and the group pause are confirmed.
+4. How should queued group rewards interact with downed players and revival? XP/chests/terminals are party-wide; shops grant personal upgrades without pausing. Independent choices and group-event pauses remain confirmed.
 5. What are chest tier probabilities, tier starting prices, and the purchase-driven price increase formula? Does each purchase raise all tiers or only that tier, and does the purchase counter reset each area or each run? Randomized tiers, tier-based starting prices, shared spending, and group rewards are confirmed.
 6. What minimum PC, resolution, and frame-rate target should we support? Boss duration is until killed, and the third-area setting stays undecided.

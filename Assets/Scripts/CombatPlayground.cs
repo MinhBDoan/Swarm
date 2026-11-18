@@ -21,7 +21,7 @@ namespace Swarm
         }
         public bool BonusUpgrade { get; private set; }
         public static CombatPlayground Instance { get; private set; }
-        public static bool BlocksInput => Instance && Instance.Running && (Instance.LocalMenuOpen || Instance.ChoosingUpgrade || Instance.Health <= 0 || Instance.Won || Instance.PartyPaused);
+        public static bool BlocksInput => Instance && Instance.Running && (Instance.LocalMenuOpen || Instance.ShopOpen || Instance.ChoosingUpgrade || Instance.Health <= 0 || Instance.Won || Instance.PartyPaused);
         public bool Won { get; private set; }
         public int Wave { get; private set; }
         public bool Resting { get; private set; }
@@ -151,11 +151,12 @@ namespace Swarm
             for (int i=0;i<cacheStates.Length;i++) cacheStates[i]=CacheChallengeState.Available;
             CacheSecondsRemaining = 0;
             BonusUpgrade=false; bonusPending=0;
+            GenerateRunLayout();
             ResetRouteEncounters();
             ResetDownload();
             ResetBoss();
             ResetEconomy();
-            CreateCache(); CreateSupplies();
+            CreateCache(); CreateSupplies(); CreateShops();
             WeaponStatus = "Searching for a visible enemy";
             Notice = "Weapon fires automatically. Keep moving and collect green XP.";
             if (NetworkActive) StartParty();
@@ -187,6 +188,7 @@ namespace Swarm
             Running = ChoosingUpgrade = false;
             if (CoopAuthority) PublishSnapshot();
             ClearParty();
+            ResetShops(); RestoreRunLayout();
             ClearWeaponPresentation();
             if (root) { root.gameObject.SetActive(false); Destroy(root.gameObject); }
             enemies.Clear(); bullets.Clear(); orbs.Clear(); effects.Clear(); choices.Clear(); enemyShots.Clear(); cacheGuards.Clear();
@@ -199,6 +201,7 @@ namespace Swarm
         void Update()
         {
             TickConnection();
+            TickShops();
             if (Input.GetKeyDown(KeyCode.F8)) ToggleCombatHud();
             if (Input.GetKeyDown(KeyCode.N)) ShowEnemyLabels = !ShowEnemyLabels;
             if (!Running && (!NetworkActive || NetworkManager.Singleton.IsServer) && Input.GetKeyDown(KeyCode.F)) Begin();
@@ -216,7 +219,7 @@ namespace Swarm
             }
             if (Health <= 0 || Won) return;
             // Escape is a solo pause, so opening menus cannot get the player killed.
-            if (Cursor.lockState != CursorLockMode.Locked && !Application.isBatchMode) return;
+            if (Cursor.lockState != CursorLockMode.Locked && !Application.isBatchMode && !ShopOpen) return;
             float dt = Mathf.Min(Time.deltaTime, .05f);
             elapsed += dt; fireClock -= dt; spawnClock -= dt; hurtClock -= dt;
             if (recoveryRank > 0) Health = Mathf.Min(100,Health+RecoveryPerSecond*dt);
@@ -363,7 +366,7 @@ namespace Swarm
         void LateUpdate()
         {
             UpdatePersistentHud();
-            if (!NetworkActive && Running && (Health <= 0 || ChoosingUpgrade || Won || (Cursor.lockState != CursorLockMode.Locked && !Application.isBatchMode)))
+            if (!NetworkActive && Running && (Health <= 0 || ChoosingUpgrade || Won || (Cursor.lockState != CursorLockMode.Locked && !Application.isBatchMode && !ShopOpen)))
                 PauseAgents();
         }
         float RunMinutes => Mathf.Max(0,elapsed)/60;
@@ -862,7 +865,7 @@ namespace Swarm
                 default: return $"Explosive hits {BlastRank+1}/3\nEach hit blasts nearby enemies for 50% damage. Radius {2.5f+.6f*BlastRank:0.0}m.";
             }
         }
-        void CaptureMouse() { if (LocalMenuOpen) return; if (NetworkActive && contextId != NetworkManager.Singleton.LocalClientId) return; Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
+        void CaptureMouse() { if (LocalMenuOpen || ShopOpen) return; if (NetworkActive && contextId != NetworkManager.Singleton.LocalClientId) return; Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
         void ReleaseMouse() { if (NetworkActive && contextId != NetworkManager.Singleton.LocalClientId) return; Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
         void OnGUI()
         {
@@ -914,6 +917,7 @@ namespace Swarm
             DisposeHud();
             DisposeWeaponPresentation();
             DisposeCoop();
+            DisposeShops();
             if (navInstance.valid) navInstance.Remove();
             if (navData) Destroy(navData);
             DestroySupplyMaterials();

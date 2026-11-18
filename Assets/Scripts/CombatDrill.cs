@@ -18,7 +18,7 @@ namespace Swarm
         public int DrillEnemyHits { get; private set; }
         public int ReceivedDrillStates { get; private set; }
         public bool DrillWorldPaused => NetworkActive ? Running && (LocalMenuOpen || PartyPaused || PartyDefeated || Won) :
-            Running && (LocalMenuOpen || ChoosingUpgrade || Health<=0 || Won) || !Application.isBatchMode && Cursor.lockState!=CursorLockMode.Locked;
+            Running && (LocalMenuOpen || ChoosingUpgrade || Health<=0 || Won) || !Application.isBatchMode && !ShopOpen && Cursor.lockState!=CursorLockMode.Locked;
         public void TickDrill(DrillHazard drill,float dt)
         {
             if (drillWasNetworked!=NetworkActive) { drillPatients.Clear(); drillSeenSerial=0; DrillPracticeHealth=100; drillWasNetworked=NetworkActive; }

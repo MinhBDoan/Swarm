@@ -1,0 +1,330 @@
+{
+  "solo-results.json": [
+    {
+      "test": "layout",
+      "exit": 0,
+      "seconds": 4.2,
+      "results": [
+        "SWARM_RUN_LAYOUT: seed=1138619529 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+        "SWARM_RUN_LAYOUT: seed=1776798387 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+        "SWARM_RUN_LAYOUT: seed=631321334 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+        "SWARM_RUN_LAYOUT_TEST: PASS role=solo"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "shop",
+      "exit": 0,
+      "seconds": 2.8,
+      "results": [
+        "SWARM_RUN_LAYOUT: seed=1974440202 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+        "SWARM_RUN_LAYOUT: seed=87660176 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+        "SWARM_SHOP_TEST: PASS role=solo"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "terminals",
+      "exit": 0,
+      "seconds": 3.8,
+      "results": [
+        "SWARM_RUN_LAYOUT: seed=1858010543 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+        "SWARM_RUN_LAYOUT: seed=35133735 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+        "SWARM_RUN_LAYOUT: seed=139518193 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+        "SWARM_RUN_LAYOUT: seed=60687364 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+        "SWARM_RUN_LAYOUT: seed=2055695360 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+        "SWARM_RUN_LAYOUT: seed=940874931 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+        "SWARM_RUN_LAYOUT: seed=927747279 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+        "SWARM_RUN_LAYOUT: seed=1149364267 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+        "SWARM_RUN_LAYOUT: seed=93891527 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+        "SWARM_DOWNLOAD_TIER_TEST: PASS rates=True exactRewards=True archived=True once=True concurrent=True pressure=True reset=True"
+      ],
+      "exceptions": []
+    }
+  ],
+  "coop-results.json": [
+    {
+      "test": "layout",
+      "role": "host",
+      "exit": 0,
+      "results": [
+        "SWARM_RUN_LAYOUT_TRACE: network connected=True",
+        "SWARM_RUN_LAYOUT_TRACE: party joined=True",
+        "SWARM_RUN_LAYOUT_TRACE: layout dimensions=True",
+        "SWARM_RUN_LAYOUT_TRACE: all generated actor points supported by floor=True",
+        "SWARM_RUN_LAYOUT_TRACE: all generated actor points reachable from basin=True",
+        "SWARM_RUN_LAYOUT_TRACE: generated actors separated by 14m=True",
+        "SWARM_RUN_LAYOUT_TRACE: three added terminal slots inside central flats=True",
+        "SWARM_RUN_LAYOUT_TRACE: layout arrays and live coordinates agree=True",
+        "SWARM_RUN_LAYOUT_TRACE: boss props follow layout without repeated-apply drift=True",
+        "SWARM_RUN_LAYOUT_TRACE: host retry changes seed=True",
+        "SWARM_RUN_LAYOUT_TRACE: client verified snapshot and acknowledged current console=True",
+        "SWARM_RUN_LAYOUT_TRACE: layout dimensions=True",
+        "SWARM_RUN_LAYOUT_TRACE: all generated actor points supported by floor=True",
+        "SWARM_RUN_LAYOUT_TRACE: all generated actor points reachable from basin=True",
+        "SWARM_RUN_LAYOUT_TRACE: generated actors separated by 14m=True",
+        "SWARM_RUN_LAYOUT_TRACE: three added terminal slots inside central flats=True",
+        "SWARM_RUN_LAYOUT_TRACE: layout arrays and live coordinates agree=True",
+        "SWARM_RUN_LAYOUT_TRACE: boss props follow layout without repeated-apply drift=True",
+        "SWARM_RUN_LAYOUT_TRACE: host retry changes seed=True",
+        "SWARM_RUN_LAYOUT_TRACE: client verified snapshot and acknowledged current console=True",
+        "SWARM_RUN_LAYOUT_TEST: PASS role=host"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "layout",
+      "role": "client",
+      "exit": 0,
+      "results": [
+        "SWARM_RUN_LAYOUT_TRACE: network connected=True",
+        "SWARM_RUN_LAYOUT_TRACE: host layout message received=True",
+        "SWARM_RUN_LAYOUT_TRACE: host fingerprint and live coordinates match on client=True",
+        "SWARM_RUN_LAYOUT_TRACE: client receives retry seed=True",
+        "SWARM_RUN_LAYOUT_TRACE: client boss prop relocation=True",
+        "SWARM_RUN_LAYOUT_TRACE: client layout stable for 30 frames=True",
+        "SWARM_RUN_LAYOUT_TRACE: host layout message received=True",
+        "SWARM_RUN_LAYOUT_TRACE: host fingerprint and live coordinates match on client=True",
+        "SWARM_RUN_LAYOUT_TRACE: client receives retry seed=True",
+        "SWARM_RUN_LAYOUT_TRACE: client boss prop relocation=True",
+        "SWARM_RUN_LAYOUT_TRACE: client layout stable for 30 frames=True",
+        "SWARM_RUN_LAYOUT_TRACE: host stop replicated=True",
+        "SWARM_RUN_LAYOUT_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "shop",
+      "role": "host",
+      "exit": 0,
+      "results": [
+        "SWARM_SHOP_STEP: connected=True",
+        "SWARM_SHOP_STEP: two players=True",
+        "SWARM_SHOP_STEP: remote personal purchase applied=True",
+        "SWARM_SHOP_STEP: other player receives no upgrade or pause=True",
+        "SWARM_SHOP_STEP: shared wallet charged once=True",
+        "SWARM_SHOP_STEP: same npc available to host=True",
+        "SWARM_SHOP_STEP: host has independent purchase entitlement=True",
+        "SWARM_SHOP_STEP: host browse does not stop clock=True",
+        "SWARM_SHOP_STEP: client left after stop=True",
+        "SWARM_SHOP_TEST: PASS role=host"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "shop",
+      "role": "client",
+      "exit": 0,
+      "results": [
+        "SWARM_SHOP_STEP: connected=True",
+        "SWARM_SHOP_STEP: funded run received=True",
+        "SWARM_SHOP_STEP: remote browse requested=True",
+        "SWARM_SHOP_STEP: host catalog received=True",
+        "SWARM_SHOP_STEP: remote catalog does not pause=True",
+        "SWARM_SHOP_STEP: remote reopened=True",
+        "SWARM_SHOP_STEP: remote catalog stable=True",
+        "SWARM_SHOP_STEP: remote purchase replicated=True",
+        "SWARM_SHOP_STEP: remote purchase needs no group choice=True",
+        "SWARM_SHOP_STEP: duplicate remote request charged once=True",
+        "SWARM_SHOP_STEP: run stopped=True",
+        "SWARM_SHOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "download",
+      "role": "host",
+      "exit": 0,
+      "results": [
+        "SWARM_DOWNLOADTIERCOOP_TRACE: host exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: host exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: host exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: host exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: host exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: host exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: host exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: host exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: host exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: host exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: host exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: host exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TEST: PASS role=host"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "download",
+      "role": "client",
+      "exit": 0,
+      "results": [
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: selected index replicated=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: outside player exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: outside player exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: outside player exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: completed archive replicated=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: completed archive replicated=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: completed archive replicated=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: completed archive replicated=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: selected index replicated=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: outside player exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: outside player exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: outside player exact tier=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: completed archive replicated=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: completed archive replicated=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: completed archive replicated=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: completed archive replicated=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: completed archive replicated=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TRACE: wait completed=True",
+        "SWARM_DOWNLOADTIERCOOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "boss",
+      "role": "host",
+      "exit": 0,
+      "results": [
+        "SWARM_BOSSCOOP_STEP: connected=True",
+        "SWARM_BOSSCOOP_STEP: party joined=True",
+        "SWARM_BOSSCOOP_STEP: distant proposal rejected=True",
+        "SWARM_BOSSCOOP_STEP: remote proposal=True",
+        "SWARM_BOSSCOOP_STEP: waits for teammate=True",
+        "SWARM_BOSSCOOP_STEP: host votes from afar=True",
+        "SWARM_BOSSCOOP_STEP: unanimous countdown=True",
+        "SWARM_BOSSCOOP_STEP: no spawn before countdown=True",
+        "SWARM_BOSSCOOP_STEP: early boss spawn=True",
+        "SWARM_BOSSCOOP_STEP: boss defeat ends stage=True",
+        "SWARM_BOSSCOOP_TEST: PASS role=host"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "boss",
+      "role": "client",
+      "exit": 0,
+      "results": [
+        "SWARM_BOSSCOOP_STEP: connected=True",
+        "SWARM_BOSSCOOP_STEP: run replicated=True",
+        "SWARM_BOSSCOOP_STEP: discovery replicated=True",
+        "SWARM_BOSSCOOP_STEP: remote console interaction=True",
+        "SWARM_BOSSCOOP_STEP: vote replicated=True",
+        "SWARM_BOSSCOOP_STEP: fight replicated=True",
+        "SWARM_BOSSCOOP_STEP: victory replicated=True",
+        "SWARM_BOSSCOOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "pause",
+      "role": "host",
+      "exit": 0,
+      "results": [
+        "SWARM_GROUPPAUSE_STEP: connected=True",
+        "SWARM_GROUPPAUSE_STEP: two players=True",
+        "SWARM_GROUPPAUSE_STEP: overlapping menus=True",
+        "SWARM_GROUPPAUSE_STEP: remote menu retains pause=True",
+        "SWARM_GROUPPAUSE_STEP: remote menu clock frozen=True",
+        "SWARM_GROUPPAUSE_STEP: remote menu drill frozen=True",
+        "SWARM_GROUPPAUSE_STEP: remote menu movement blocked=True",
+        "SWARM_GROUPPAUSE_STEP: only host upgrade pending=True",
+        "SWARM_GROUPPAUSE_STEP: upgrade retains pause after menus close=True",
+        "SWARM_GROUPPAUSE_STEP: upgrade clock frozen=True",
+        "SWARM_GROUPPAUSE_STEP: upgrade drill frozen=True",
+        "SWARM_GROUPPAUSE_STEP: upgrade movement blocked=True",
+        "SWARM_GROUPPAUSE_STEP: all selections resolved=True",
+        "SWARM_GROUPPAUSE_STEP: simulation resumes=True",
+        "SWARM_GROUPPAUSE_STEP: remote disconnect menu opened=True",
+        "SWARM_GROUPPAUSE_STEP: remote disconnected=True",
+        "SWARM_GROUPPAUSE_STEP: departed pause removed=True",
+        "SWARM_GROUPPAUSE_STEP: clock resumes after disconnect=True",
+        "SWARM_GROUPPAUSE_STEP: retry clears menu state=True",
+        "SWARM_GROUPPAUSE_TEST: PASS role=host"
+      ],
+      "exceptions": []
+    },
+    {
+      "test": "pause",
+      "role": "client",
+      "exit": 0,
+      "results": [
+        "SWARM_GROUPPAUSE_STEP: connected=True",
+        "SWARM_GROUPPAUSE_STEP: host menu received=True",
+        "SWARM_GROUPPAUSE_STEP: host pause replicated=True",
+        "SWARM_GROUPPAUSE_STEP: shared upgrade received=True",
+        "SWARM_GROUPPAUSE_STEP: client upgrade resolved=True",
+        "SWARM_GROUPPAUSE_STEP: host pending choice keeps client paused=True",
+        "SWARM_GROUPPAUSE_STEP: host choice completed=True",
+        "SWARM_GROUPPAUSE_STEP: disconnect phase received=True",
+        "SWARM_GROUPPAUSE_STEP: leave clears menu state=True",
+        "SWARM_GROUPPAUSE_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    }
+  ],
+  "economy-six-results.json": [
+    {
+      "instance": 0,
+      "exit": 0,
+      "results": [
+        "SWARM_ECONOMYCOOP_TEST: PASS role=host"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 1,
+      "exit": 0,
+      "results": [
+        "SWARM_ECONOMYCOOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 2,
+      "exit": 0,
+      "results": [
+        "SWARM_ECONOMYCOOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 3,
+      "exit": 0,
+      "results": [
+        "SWARM_ECONOMYCOOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 4,
+      "exit": 0,
+      "results": [
+        "SWARM_ECONOMYCOOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    },
+    {
+      "instance": 5,
+      "exit": 0,
+      "results": [
+        "SWARM_ECONOMYCOOP_TEST: PASS role=client"
+      ],
+      "exceptions": []
+    }
+  ]
+}

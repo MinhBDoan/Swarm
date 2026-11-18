@@ -42,6 +42,17 @@ namespace Swarm.Editor
             BuildTo("Builds/Swarm-CentralSlopesLoot/Swarm.exe");
         }
 
+        public static void BuildRandomEncounters()
+        {
+            EditorSceneManager.OpenScene("Assets/Scenes/CanyonPlayground.unity");
+            CanyonLoopSetup.Install();
+            DownloadSetup.Install();
+            EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
+            BuildTo("Builds/Swarm-RandomEncountersShops/Swarm.exe");
+        }
+
+        public static void BuildCurrentRandomEncounters() { BuildTo("Builds/Swarm-RandomEncountersShops/Swarm.exe"); }
+
         static void BuildTo(string destination)
         {
             var result=BuildPipeline.BuildPlayer(new[]{"Assets/Scenes/CanyonPlayground.unity"},

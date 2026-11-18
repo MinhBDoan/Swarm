@@ -1,6 +1,9 @@
 # Swarm movement prototype
 
-Latest map/reward playtest: **Builds/Swarm-CentralSlopesLoot/Swarm.exe**. See
+Latest encounter/shop playtest: **Builds/Swarm-RandomEncountersShops/Swarm.exe**. See
+[the randomized encounters and personal shops guide](Docs/Planning/RANDOM_ENCOUNTERS_SHOPS.md).
+
+Previous map/reward playtest: **Builds/Swarm-CentralSlopesLoot/Swarm.exe**. See
 [the central slopes and chests guide](Docs/Planning/CENTRAL_SLOPES_LOOT_PLAYTEST.md).
 
 Previous combined playtest: **Builds/Swarm-TerrainTimerPause/Swarm.exe**. See

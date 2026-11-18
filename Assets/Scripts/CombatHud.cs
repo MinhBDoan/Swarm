@@ -117,14 +117,16 @@ namespace Swarm
                 }
                 if (player && player.RecentSlideHop) HudLabel(new Rect(width/2-180,height-220,360,28),$"SLIDE HOP  +{player.SlideHopBonus:0.0} m/s",hudText,HudCyan);
                 DrawReadableParty();
+                if (!ShopOpen && !LocalMenuOpen && !ChoosingUpgrade) DrawShopGui(width,height);
                 if (!ChoosingUpgrade && !Won && !PartyDefeated && Health>0) DrawObjectivePanel(width);
                 HudLabel(new Rect(width-282,height-42,260,25),"F8  Switch HUD    /    Esc  Menu",hudSmall,HudMuted);
                 if (LocalMenuOpen) DrawPauseMenu(width,height);
                 else if (ChoosingUpgrade) DrawUpgradeCards(width,height);
+                else if (ShopOpen) DrawShopGui(width,height);
                 else if (Won || Health<=0 && (!NetworkActive || PartyDefeated)) DrawRunResult(width,height);
                 else if (Health<=0) DrawCenteredStatus(width,height,"YOU ARE DOWN","Your team is still fighting. Return with 50 HP at the next wave break.",new Color(1,.5f,.4f));
                 else if (PartyPaused) DrawCenteredStatus(width,height,MenuPauseActive ? "PARTY PAUSED" : "WAITING FOR TEAMMATES",MenuPauseActive ? "A teammate has a menu open. The area timer and combat are paused." : "Combat and the area timer are paused while your party chooses upgrades.",HudCyan);
-                else if (Cursor.lockState!=CursorLockMode.Locked && !Application.isBatchMode) DrawPauseMenu(width,height);
+                else if (Cursor.lockState!=CursorLockMode.Locked && !Application.isBatchMode && !ShopOpen) DrawPauseMenu(width,height);
                 if (NetworkActive && Cursor.lockState!=CursorLockMode.Locked)
                 {
                     float menuY=ChoosingUpgrade ? 22 : ShowDownloadObjective ? 230 : 184;

@@ -32,7 +32,7 @@ namespace Swarm
             p.y=height; return p;
         }
         public static Vector3 DownloadCenter => StationPoint(0,12,42);
-        public static readonly Vector3[] DownloadCenters={new Vector3(12,0,-5),new Vector3(-36,-1.9f,342),DownloadCenter,new Vector3(23,7,53),StationPoint(-30,8,0),new Vector3(-100,-2.9f,235),new Vector3(-170,-4,405),new Vector3(-115,-2.4f,530)};
+        public static readonly Vector3[] DownloadCenters={new Vector3(12,0,-5),new Vector3(-36,-1.9f,342),DownloadCenter,new Vector3(23,7,53),StationPoint(-30,8,0),new Vector3(-100,-3.3889f,235),new Vector3(-170,-4,405),new Vector3(-115,-2.4f,530)};
         public static int DownloadCount => DownloadCenters.Length;
         static readonly int[] DownloadTiers={0,1,2,3,4,1,2,3};
         public static int DownloadTierIndex(int terminal) => DownloadTiers[terminal];

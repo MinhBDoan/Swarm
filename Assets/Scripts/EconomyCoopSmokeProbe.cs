@@ -23,11 +23,15 @@ namespace Swarm
                 yield return Wait(()=>NetworkManager.Singleton.ConnectedClientsIds.Count==6);combat.AutoSpawn=combat.AutoFire=false;combat.Begin();
                 combat.SpawnEnemy(new Vector3(0,0,10));type.GetMethod("Kill",Flags).Invoke(combat,new object[]{0});ClearDrops(combat);
                 for(int i=0;i<3;i++){motor.SetSpawn(CombatPlayground.SalvageFloors[i]+Vector3.up*1.1f);combat.TrySupplyInteraction(CombatPlayground.SalvageSupplyIndex(i));}
+                yield return Wait(()=>Vector3.Distance(NetworkManager.Singleton.ConnectedClients[1].PlayerObject.transform.position,CombatPlayground.SupplyPosition(0))<2);
+                type.GetProperty("Notice").SetValue(combat,"Economy buyer ready 1");
                 yield return Wait(()=>combat.CratesPurchased==1);Check(combat.SharedMoney==5,"single shared deduction after duplicate requests");
                 for(int i=0;i<combat.UpgradeChoices.Count;i++)Check(combat.ChoiceRarity(i)==CombatPlayground.UpgradeRarity.Rare,"host outside gets rare choice");combat.ChooseUpgrade(0);yield return Wait(()=>AllPicked(combat,1));
                 combat.SpawnEnemy(new Vector3(-22,5.5f,31),true);type.GetMethod("Kill",Flags).Invoke(combat,new object[]{0});ClearDrops(combat);
                 for(int i=3;i<CombatPlayground.SalvageCount;i++){motor.SetSpawn(CombatPlayground.SalvageFloors[i]+Vector3.up*1.1f);combat.TrySupplyInteraction(CombatPlayground.SalvageSupplyIndex(i));}
                 type.GetMethod("SwitchContext",Flags).Invoke(combat,new object[]{5ul});type.GetProperty("Health").SetValue(combat,0f);type.GetMethod("SwitchContext",Flags).Invoke(combat,new object[]{0ul});
+                yield return Wait(()=>Vector3.Distance(NetworkManager.Singleton.ConnectedClients[1].PlayerObject.transform.position,CombatPlayground.SupplyPosition(3))<2);
+                type.GetProperty("Notice").SetValue(combat,"Economy buyer ready 2");
                 yield return Wait(()=>combat.CratesPurchased==2);Check(combat.SharedMoney==0 && combat.PlayerState(5).pendingTiers[0]==3,"epic purchase queues exact reward for downed teammate");
                 type.GetMethod("ReviveParty",Flags).Invoke(combat,null);combat.ChooseUpgrade(0);yield return Wait(()=>AllPicked(combat,2));
                 yield return new WaitForSecondsRealtime(.5f);combat.StopCombat();yield return Wait(()=>NetworkManager.Singleton.ConnectedClientsIds.Count==1);
@@ -37,14 +41,14 @@ namespace Swarm
                 yield return Wait(()=>combat.Running);
                 if(NetworkManager.Singleton.LocalClientId==1)
                 {
-                    yield return Wait(()=>combat.SharedMoney>=35);motor.SetSpawn(CombatPlayground.MoneyCrateFloors[0]+Vector3.up*1.1f);yield return new WaitForSecondsRealtime(.4f);
+                    yield return Wait(()=>combat.SharedMoney>=35);motor.SetSpawn(CombatPlayground.MoneyCrateFloors[0]+Vector3.up*1.1f);yield return Wait(()=>combat.Notice=="Economy buyer ready 1");
                     combat.TrySupplyInteraction(0);combat.TrySupplyInteraction(0);
                 }
                 yield return Wait(()=>combat.BonusUpgrade);Check(combat.SharedMoney==5 && combat.MoneyCrateOpened(0),"wallet and opened crate replicated");
                 for(int i=0;i<combat.UpgradeChoices.Count;i++)Check(combat.ChoiceRarity(i)==CombatPlayground.UpgradeRarity.Rare,"remote gets rare choice");combat.ChooseUpgrade(0);yield return Wait(()=>combat.UpgradeCount==1);
                 if(NetworkManager.Singleton.LocalClientId==1)
                 {
-                    yield return Wait(()=>combat.SharedMoney>=75);motor.SetSpawn(CombatPlayground.MoneyCrateFloors[3]+Vector3.up*1.1f);yield return new WaitForSecondsRealtime(1f);Debug.Log($"SWARM_ECONOMYCOOP_TRACE: buyingEpic money={combat.SharedMoney} health={combat.Health} choosing={combat.ChoosingUpgrade} position={motor.transform.position} result={combat.TrySupplyInteraction(3)}");
+                    yield return Wait(()=>combat.SharedMoney>=75);motor.SetSpawn(CombatPlayground.MoneyCrateFloors[3]+Vector3.up*1.1f);yield return Wait(()=>combat.Notice=="Economy buyer ready 2");Debug.Log($"SWARM_ECONOMYCOOP_TRACE: buyingEpic money={combat.SharedMoney} health={combat.Health} choosing={combat.ChoosingUpgrade} position={motor.transform.position} result={combat.TrySupplyInteraction(3)}");
                 }
                 yield return Wait(()=>combat.BonusUpgrade);Check(combat.SharedMoney==0 && combat.MoneyCrateOpened(3),"epic purchase replicated");
                 for(int i=0;i<combat.UpgradeChoices.Count;i++)Check(combat.ChoiceRarity(i)==CombatPlayground.UpgradeRarity.Epic,"remote gets epic choice");combat.ChooseUpgrade(0);yield return Wait(()=>combat.UpgradeCount==2);yield return Wait(()=>!combat.Running);

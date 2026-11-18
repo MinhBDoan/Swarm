@@ -33,10 +33,21 @@ namespace Swarm
         public void SetSpawn(Vector3 position) { spawn = position; Respawn(); }
         void Update()
         {
+            var combat=CombatPlayground.Instance;
+            // Browsing blocks controls, not gravity or enemy knockback.
+            if (combat && combat.Running && combat.ShopOpen && !combat.PartyPaused && !combat.LocalMenuOpen &&
+                !combat.ChoosingUpgrade && combat.Health>0 && !combat.Won)
+            {
+                if (transform.position.y < -25f) Respawn();
+                Simulate(Vector2.zero,false,false,Mathf.Min(Time.deltaTime,.033f));
+                return;
+            }
             if (CombatPlayground.BlocksInput) return;
             bool interact = Input.GetKeyDown(KeyCode.E);
-            bool bossInteraction = interact && !IsZiplining && CombatPlayground.Instance &&
+            bool shopInteraction = interact && !IsZiplining && CombatPlayground.Instance && CombatPlayground.Instance.TryOpenShop();
+            bool bossInteraction = interact && !shopInteraction && !IsZiplining && CombatPlayground.Instance &&
                 CombatPlayground.Instance.TryBossConsole();
+            if (shopInteraction) return;
             if (Cursor.lockState != CursorLockMode.Locked && !Application.isBatchMode) return;
             if (Input.GetKeyDown(KeyCode.R) || transform.position.y < -25f) Respawn();
             if (interact && !bossInteraction)

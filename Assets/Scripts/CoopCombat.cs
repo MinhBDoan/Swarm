@@ -47,6 +47,8 @@ namespace Swarm
             public bool running, won, resting, paused, defeated;
             public float rest, elapsed, cacheSeconds;
             public string notice,bossMove;
+            public RunLayoutData layout;
+            public ShopPlayerState shop;
             public PartyPlayerState player;
             public VisualState[] visuals;
             public int revives,menuPauseCount; public PartyMemberInfo[] roster;
@@ -152,6 +154,7 @@ namespace Swarm
                     boundManager.CustomMessagingManager.RegisterNamedMessageHandler("swarm.combat.command",ReceiveCommand);
                     boundManager.CustomMessagingManager.RegisterNamedMessageHandler("swarm.combat.state",ReceiveSnapshot);
                     boundManager.CustomMessagingManager.RegisterNamedMessageHandler("swarm.drill.state",ReceiveDrillState);
+                    boundManager.CustomMessagingManager.RegisterNamedMessageHandler("swarm.shop.command",ReceiveShopCommand);
                 }
                 ResolveLocalPlayer(); partyWasNetworked=true;
             }
@@ -412,6 +415,7 @@ namespace Swarm
                     downloadProgress=DownloadProgress,downloadEmpty=downloadEmptyClock,
                     spawned=waveSpawned,rest=restClock,resting=Resting,elapsed=elapsed,cacheSeconds=CacheSecondsRemaining,
                     notice=Notice,bossMove=SentinelAttackText,player=entry.Value,visuals=visuals,revives=reviveSerial,
+                    layout=ActiveRunLayout,shop=ShopSnapshotFor(entry.Key),
                     menuPauseCount=MenuPauseCount,roster=roster.ToArray() };
                 SendJson("swarm.combat.state",entry.Key,JsonUtility.ToJson(packet));
             }
@@ -422,7 +426,7 @@ namespace Swarm
             var packet=JsonUtility.FromJson<PartySnapshot>(ReadJson(reader));
             if (packet==null || packet.player==null || packet.player.id!=NetworkManager.Singleton.LocalClientId) return;
             bool newRun=packet.run!=runId, wasChoosing=ChoosingUpgrade;
-            if (newRun) { ResetLoadout(); ResetMenuPauseState(); seenRevive=0; seenKnockback=0; ReplicatedWeaponShapeMask=0; }
+            if (newRun) { ResetLoadout(); ResetShops(); ResetMenuPauseState(); seenRevive=0; seenKnockback=0; ReplicatedWeaponShapeMask=0; }
             if (newRun && player) player.Respawn();
             if (packet.revives!=seenRevive && Health<=0 && packet.player.health>0 && player) player.Respawn();
             seenRevive=packet.revives; runId=packet.run; contextId=packet.player.id;
@@ -432,6 +436,8 @@ namespace Swarm
                 player.ApplyImpulse(packet.player.knockback);
             }
             LoadState(packet.player); Running=packet.running; Won=packet.won; PartyPaused=packet.paused; PartyDefeated=packet.defeated;
+            ApplyRunLayout(packet.layout);
+            AcceptShopSnapshot(packet.shop);
             AcceptMenuPauseSnapshot(packet.menuPauseCount);
             Wave=packet.wave; Kills=packet.kills; remoteEnemyCount=packet.totalEnemies; remoteOrbCount=packet.orbs;
             cacheIndex=Mathf.Clamp(packet.selectedCache,0,cacheStates.Length-1);
@@ -445,9 +451,9 @@ namespace Swarm
             SharedMoney=packet.money;CratesPurchased=packet.purchases;
             if(packet.openedCrates!=null && packet.openedCrates.Length==moneyCratesOpened.Length)System.Array.Copy(packet.openedCrates,moneyCratesOpened,moneyCratesOpened.Length);
             if(packet.brokenSalvage!=null && packet.brokenSalvage.Length==salvageBroken.Length)System.Array.Copy(packet.brokenSalvage,salvageBroken,salvageBroken.Length);
-            downloadIndex=Mathf.Clamp(packet.downloadIndex,0,4);
-            if(packet.downloadStates!=null && packet.downloadStates.Length==5 && packet.downloadPercents!=null && packet.downloadPercents.Length==5)
-                for(int i=0;i<5;i++) {downloadStates[i]=(DownloadPhase)packet.downloadStates[i];downloadPercents[i]=packet.downloadPercents[i];}
+            downloadIndex=Mathf.Clamp(packet.downloadIndex,0,CanyonLayout.DownloadCount-1);
+            if(packet.downloadStates!=null && packet.downloadStates.Length==CanyonLayout.DownloadCount && packet.downloadPercents!=null && packet.downloadPercents.Length==CanyonLayout.DownloadCount)
+                for(int i=0;i<CanyonLayout.DownloadCount;i++) {downloadStates[i]=(DownloadPhase)packet.downloadStates[i];downloadPercents[i]=packet.downloadPercents[i];}
             DownloadState=(DownloadPhase)packet.downloadState; DownloadProgress=packet.downloadProgress;
             DownloadOccupants=packet.downloadPlayers; DownloadEnemiesSpawned=packet.downloadSpawns; downloadEmptyClock=packet.downloadEmpty;
             CacheState=(CacheChallengeState)packet.cache; remoteCacheGuards=packet.guards; waveSpawned=packet.spawned; restClock=packet.rest;
@@ -457,7 +463,7 @@ namespace Swarm
             if (ChoosingUpgrade || Won || PartyDefeated || LocalMenuOpen) ReleaseMouse();
             else if (wasChoosing || newRun) CaptureMouse();
             ApplyVisuals(packet.visuals); ReceivedCombatSnapshots++;
-            if (!Running) ClearParty();
+            if (!Running) { ClearParty(); ResetShops(); RestoreRunLayout(); }
         }
         void ApplyVisuals(VisualState[] visuals)
         {
@@ -543,6 +549,7 @@ namespace Swarm
                 boundManager.CustomMessagingManager.UnregisterNamedMessageHandler("swarm.combat.command");
                 boundManager.CustomMessagingManager.UnregisterNamedMessageHandler("swarm.combat.state");
                 boundManager.CustomMessagingManager.UnregisterNamedMessageHandler("swarm.drill.state");
+                boundManager.CustomMessagingManager.UnregisterNamedMessageHandler("swarm.shop.command");
             }
             if (proxyRoot) Destroy(proxyRoot);
             foreach (var material in proxyTints.Values) Destroy(material);

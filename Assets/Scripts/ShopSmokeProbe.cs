@@ -44,7 +44,25 @@ namespace Swarm
                 var first=combat.LocalShopState.visits[0];var offers=new List<BoltUpgrade>(first.offers);int revision=first.revision;
                 Check(first.offers.Count==3 && new HashSet<BoltUpgrade>(first.offers).Count==3,"three distinct offers");
                 Check(!combat.ChoosingUpgrade && !combat.PartyPaused && !combat.LocalMenuOpen,"browse is not group pause");
-                float before=Elapsed;yield return new WaitForSecondsRealtime(.4f);
+                int capture=Array.IndexOf(args,"-swarm-shop-capture");
+                if(capture>=0)
+                {
+                    var camera=Camera.main;camera.GetComponent<OrbitCamera>().enabled=false;
+                    camera.transform.position=CombatPlayground.ShopLocations[0]+new Vector3(7,5,-9);
+                    camera.transform.LookAt(CombatPlayground.ShopLocations[0]+Vector3.up);
+                    Fund(300);
+                    Screen.SetResolution(1600,900,false);
+                    yield return new WaitForSecondsRealtime(1);
+                    System.IO.Directory.CreateDirectory(args[capture+1]);
+                    ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(args[capture+1],"shop-1600.png"));
+                    yield return new WaitForSecondsRealtime(.5f);
+                    Fund(0);
+                }
+
+                float before=Elapsed;Vector3 beforeImpulse=motor.transform.position;
+                motor.enabled=true;motor.ApplyImpulse(Vector3.right*3+Vector3.up*2);
+                yield return new WaitForSecondsRealtime(.4f);motor.enabled=false;
+                Check((motor.transform.position-beforeImpulse).magnitude>.1f,"gravity and knockback continue while browsing");
                 Check(Elapsed>before+.1f,"clock advances while browsing");
                 combat.BuyShopOffer(0);Check(combat.SharedMoney==0 && !first.purchased && combat.ShopOpen,"insufficient funds rejected");
                 combat.CloseShop();combat.TryOpenShop(0);

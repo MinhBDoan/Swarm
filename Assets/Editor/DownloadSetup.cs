@@ -15,7 +15,7 @@ namespace Swarm.Editor
                 var material=AssetDatabase.LoadAssetAtPath<Material>(path);
                 if(!material) {material=new Material(Shader.Find("Unlit/Color"));AssetDatabase.CreateAsset(material,path);}
                 material.color=CombatPlayground.RarityColor(tier); EditorUtility.SetDirty(material);
-                var console=GameObject.CreatePrimitive(PrimitiveType.Cube); console.name=tier+" download console"; console.transform.SetParent(root);
+                var console=GameObject.CreatePrimitive(PrimitiveType.Cube); console.name=tier+" download console"; console.layer=2; Object.DestroyImmediate(console.GetComponent<Collider>()); console.transform.SetParent(root);
                 console.transform.position=center+new Vector3(0,.45f,3); console.transform.localScale=new Vector3(.8f,.9f,.6f); console.GetComponent<Renderer>().sharedMaterial=material;
                 var zone=new GameObject(tier+" download zone",typeof(DownloadTerminal)); zone.transform.SetParent(root); zone.transform.position=center; zone.GetComponent<DownloadTerminal>().terminalIndex=i;
                 var sign=new GameObject(tier+" download label",typeof(TextMesh)); sign.transform.SetParent(root); sign.transform.position=center+new Vector3(0,2.7f,4);
