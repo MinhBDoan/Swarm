@@ -41,11 +41,11 @@ namespace Swarm
             for (int i=0;i<a.Length;i++) if (!Same(a[i],b[i])) return false;
             return true;
         }
-        string Fingerprint(CombatPlayground combat)
+        string Fingerprint(CombatPlayground combat,bool includeSeed=true)
         {
             var layout=combat.ActiveRunLayout;
             if (layout==null) return "missing";
-            var text=new StringBuilder(layout.seed.ToString(CultureInfo.InvariantCulture));
+            var text=new StringBuilder(includeSeed ? layout.seed.ToString(CultureInfo.InvariantCulture) : "layout");
             void Add(Vector3 point)
             {
                 // Millimeter precision is enough to distinguish layouts while
@@ -148,9 +148,9 @@ namespace Swarm
                 Check(combat.Running,"solo run begins");
                 if (!combat.Running) break;
                 CheckHostGeometry(combat);
-                string fingerprint=Fingerprint(combat);
-                Check(run==0 || combat.RunSeed!=previousSeed && fingerprint!=previous,"retry chooses a new seed and layout");
-                previousSeed=combat.RunSeed;previous=fingerprint;
+                string fingerprint=Fingerprint(combat),placements=Fingerprint(combat,false);
+                Check(run==0 || combat.RunSeed!=previousSeed && placements!=previous,"retry chooses a new seed and new physical placements");
+                previousSeed=combat.RunSeed;previous=placements;
                 for (int frame=0;frame<30;frame++)
                 {
                     yield return null;
