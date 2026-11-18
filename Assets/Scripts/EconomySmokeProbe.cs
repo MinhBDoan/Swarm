@@ -18,7 +18,7 @@ namespace Swarm
             bool distance=!combat.TrySupplyInteraction(0);motor.SetSpawn(CombatPlayground.MoneyCrateFloors[0]+Vector3.up*1.1f);
             combat.TrySupplyInteraction(0);bool insufficient=combat.SharedMoney==0 && !combat.MoneyCrateOpened(0) && !combat.ChoosingUpgrade;
             bool salvage=true;
-            for(int i=0;i<3;i++){motor.SetSpawn(CombatPlayground.SalvageFloors[i]+Vector3.up*1.1f);salvage &= combat.TrySupplyInteraction(i+4) && combat.SalvageBroken(i) && !combat.TrySupplyInteraction(i+4);}
+            for(int i=0;i<3;i++){motor.SetSpawn(CombatPlayground.SalvageFloors[i]+Vector3.up*1.1f);salvage &= combat.TrySupplyInteraction(CombatPlayground.SalvageSupplyIndex(i)) && combat.SalvageBroken(i) && !combat.TrySupplyInteraction(CombatPlayground.SalvageSupplyIndex(i));}
             salvage &= combat.SharedMoney==30;
             motor.SetSpawn(CombatPlayground.MoneyCrateFloors[0]+Vector3.up*1.1f);bool rare=combat.TrySupplyInteraction(0) && combat.SharedMoney==0 && combat.CratesPurchased==1;
             for(int i=0;i<combat.UpgradeChoices.Count;i++)rare &= combat.ChoiceRarity(i)==CombatPlayground.UpgradeRarity.Rare;
@@ -27,7 +27,7 @@ namespace Swarm
             var kill=typeof(CombatPlayground).GetMethod("Kill",Flags);
             bool bounty=combat.SpawnEnemy(new Vector3(-22,5.5f,31));kill.Invoke(combat,new object[]{0});bounty &= combat.SharedMoney==5;
             bounty &= combat.SpawnEnemy(new Vector3(-22,5.5f,31),true);kill.Invoke(combat,new object[]{0});bounty &= combat.SharedMoney==45;
-            for(int i=3;i<6;i++){motor.SetSpawn(CombatPlayground.SalvageFloors[i]+Vector3.up*1.1f);salvage &= combat.TrySupplyInteraction(i+4);}
+            for(int i=3;i<CombatPlayground.SalvageCount;i++){motor.SetSpawn(CombatPlayground.SalvageFloors[i]+Vector3.up*1.1f);salvage &= combat.TrySupplyInteraction(CombatPlayground.SalvageSupplyIndex(i));}
             motor.SetSpawn(CombatPlayground.MoneyCrateFloors[2]+Vector3.up*1.1f);
             var args=Environment.GetCommandLineArgs();int capture=Array.IndexOf(args,"-swarm-economy-capture");
             if(capture>=0)

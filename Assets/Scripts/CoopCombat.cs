@@ -443,8 +443,8 @@ namespace Swarm
             remoteSentinelMove=packet.bossMove ?? "";
             bossClock=packet.bossClock; localBossReady=packet.bossVoted;
             SharedMoney=packet.money;CratesPurchased=packet.purchases;
-            if(packet.openedCrates!=null && packet.openedCrates.Length==4)System.Array.Copy(packet.openedCrates,moneyCratesOpened,4);
-            if(packet.brokenSalvage!=null && packet.brokenSalvage.Length==6)System.Array.Copy(packet.brokenSalvage,salvageBroken,6);
+            if(packet.openedCrates!=null && packet.openedCrates.Length==moneyCratesOpened.Length)System.Array.Copy(packet.openedCrates,moneyCratesOpened,moneyCratesOpened.Length);
+            if(packet.brokenSalvage!=null && packet.brokenSalvage.Length==salvageBroken.Length)System.Array.Copy(packet.brokenSalvage,salvageBroken,salvageBroken.Length);
             downloadIndex=Mathf.Clamp(packet.downloadIndex,0,4);
             if(packet.downloadStates!=null && packet.downloadStates.Length==5 && packet.downloadPercents!=null && packet.downloadPercents.Length==5)
                 for(int i=0;i<5;i++) {downloadStates[i]=(DownloadPhase)packet.downloadStates[i];downloadPercents[i]=packet.downloadPercents[i];}

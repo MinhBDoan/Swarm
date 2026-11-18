@@ -22,11 +22,11 @@ namespace Swarm
             {
                 yield return Wait(()=>NetworkManager.Singleton.ConnectedClientsIds.Count==6);combat.AutoSpawn=combat.AutoFire=false;combat.Begin();
                 combat.SpawnEnemy(new Vector3(0,0,10));type.GetMethod("Kill",Flags).Invoke(combat,new object[]{0});ClearDrops(combat);
-                for(int i=0;i<3;i++){motor.SetSpawn(CombatPlayground.SalvageFloors[i]+Vector3.up*1.1f);combat.TrySupplyInteraction(i+4);}
+                for(int i=0;i<3;i++){motor.SetSpawn(CombatPlayground.SalvageFloors[i]+Vector3.up*1.1f);combat.TrySupplyInteraction(CombatPlayground.SalvageSupplyIndex(i));}
                 yield return Wait(()=>combat.CratesPurchased==1);Check(combat.SharedMoney==5,"single shared deduction after duplicate requests");
                 for(int i=0;i<combat.UpgradeChoices.Count;i++)Check(combat.ChoiceRarity(i)==CombatPlayground.UpgradeRarity.Rare,"host outside gets rare choice");combat.ChooseUpgrade(0);yield return Wait(()=>AllPicked(combat,1));
                 combat.SpawnEnemy(new Vector3(-22,5.5f,31),true);type.GetMethod("Kill",Flags).Invoke(combat,new object[]{0});ClearDrops(combat);
-                for(int i=3;i<6;i++){motor.SetSpawn(CombatPlayground.SalvageFloors[i]+Vector3.up*1.1f);combat.TrySupplyInteraction(i+4);}
+                for(int i=3;i<CombatPlayground.SalvageCount;i++){motor.SetSpawn(CombatPlayground.SalvageFloors[i]+Vector3.up*1.1f);combat.TrySupplyInteraction(CombatPlayground.SalvageSupplyIndex(i));}
                 type.GetMethod("SwitchContext",Flags).Invoke(combat,new object[]{5ul});type.GetProperty("Health").SetValue(combat,0f);type.GetMethod("SwitchContext",Flags).Invoke(combat,new object[]{0ul});
                 yield return Wait(()=>combat.CratesPurchased==2);Check(combat.SharedMoney==0 && combat.PlayerState(5).pendingTiers[0]==3,"epic purchase queues exact reward for downed teammate");
                 type.GetMethod("ReviveParty",Flags).Invoke(combat,null);combat.ChooseUpgrade(0);yield return Wait(()=>AllPicked(combat,2));
