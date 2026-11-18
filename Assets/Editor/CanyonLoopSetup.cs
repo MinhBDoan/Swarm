@@ -116,11 +116,21 @@ namespace Swarm.Editor
                     bool left=col<5;
                     float blend=left ? col/4f : (9-col)/4f;
                     float sign=left ? -1 : 1;
-                    Vector3 edge=center+side*(sign*widths[row]);
+                    float half=widths[row];
+                    Vector3 outward=side*sign;
+                    Vector3 edge=center+outward*half;
                     float baseHeight=SupportHeight(edge,ground,Mathf.Min(-4,center.y));
                     // A 3:1 run makes even the high western end an ordinary, carvable slope.
                     float run=Mathf.Max(12,Mathf.Abs(top-baseHeight)*3+4);
-                    Vector3 toe=edge+side*(sign*run);
+                    float extent=half+run;
+                    // At the canyon/yard mouths, the supporting floor narrows. Never extend
+                    // a bank into empty space using the fallback elevation. Keep three meters
+                    // of real floor beyond its toe, tapering the crest only where necessary.
+                    while(extent>1 && float.IsNaN(SupportHeight(center+outward*(extent+3),ground,float.NaN)))
+                        extent-=1;
+                    half=Mathf.Min(half,extent*.6f);
+                    edge=center+outward*half;
+                    Vector3 toe=center+outward*extent;
                     float toeHeight=SupportHeight(toe,ground,baseHeight);
                     Vector3 p=Vector3.Lerp(toe,edge,blend);
                     float eased=blend*blend*(3-2*blend);
