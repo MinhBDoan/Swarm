@@ -18,9 +18,9 @@ namespace Swarm.Editor
             var zip=AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/Zipline.mat");
             Corridor(root,"Western ridge",CanyonLayout.StationPumpRoute,24,24,38,sand,rock,mine);
             Corridor(root,"Return gully",CanyonLayout.PumpBasinRoute,24,38,24,sand,rock,mine);
-            Corridor(root,"Central cut",CanyonLayout.MiddleRoute,18,40,46,sand,rock,route);
-
+            // Build the flats first: the cut shoulders sample this exact floor collider.
             CanyonCenterSetup.Install(root,sand,rock,route);
+            GroundedCut(root,sand,route);
 
             // Replace only the basin's boundary: preserve its existing upper routes.
             var west=GameObject.Find("West canyon"); if (west) Object.DestroyImmediate(west);
@@ -77,6 +77,92 @@ namespace Swarm.Editor
             Sign(root,"PUMPING YARD / RETURN GULLY",new Vector3(-39,3,12),Vector3.left,metal);
             Sign(root,"PUMPING YARD / CENTRAL SHORTCUT",new Vector3(-49,4,383),Vector3.left,metal);
             Sign(root,"NORTH: DRILL / EAST: SHELTER / SOUTH: BASIN",c+new Vector3(30,4,9),Vector3.left,metal);
+        }
+
+        static void GroundedCut(Transform root,Material sand,Material marker)
+        {
+            var points=CanyonLayout.MiddleRoute;
+            var ground=new List<Collider>();
+            foreach (string name in new[] {"Central flats floor","Continuous lower trail"})
+            {
+                var obj=GameObject.Find(name);
+                if (obj && obj.GetComponent<Collider>()) ground.Add(obj.GetComponent<Collider>());
+            }
+            var centers=new List<Vector3>();
+            var widths=new List<float>();
+            for (int segment=0;segment<points.Length-1;segment++)
+            {
+                int steps=Mathf.CeilToInt(Vector3.Distance(points[segment],points[segment+1])/8);
+                for (int step=0;step<steps;step++)
+                {
+                    float t=(float)step/steps;
+                    centers.Add(Vector3.Lerp(points[segment],points[segment+1],t));
+                    float a=segment==0 ? 20 : 9,b=segment==points.Length-2 ? 23 : 9;
+                    widths.Add(Mathf.Lerp(a,b,t));
+                }
+            }
+            centers.Add(points[points.Length-1]); widths.Add(23);
+            // Four subdivisions on each shoulder plus the retained broad walking crest.
+            var vertices=new List<Vector3>(); var triangles=new List<int>();
+            const int columns=10;
+            for (int row=0;row<centers.Count;row++)
+            {
+                Vector3 center=centers[row];
+                Vector3 direction=Flat(centers[Mathf.Min(row+1,centers.Count-1)]-centers[Mathf.Max(0,row-1)]);
+                Vector3 side=Vector3.Cross(Vector3.up,direction);
+                float top=Mathf.Max(center.y,SupportHeight(center,ground,center.y)+.04f);
+                for (int col=0;col<columns;col++)
+                {
+                    bool left=col<5;
+                    float blend=left ? col/4f : (9-col)/4f;
+                    float sign=left ? -1 : 1;
+                    Vector3 edge=center+side*(sign*widths[row]);
+                    float baseHeight=SupportHeight(edge,ground,Mathf.Min(-4,center.y));
+                    // A 3:1 run makes even the high western end an ordinary, carvable slope.
+                    float run=Mathf.Max(12,Mathf.Abs(top-baseHeight)*3+4);
+                    Vector3 toe=edge+side*(sign*run);
+                    float toeHeight=SupportHeight(toe,ground,baseHeight);
+                    Vector3 p=Vector3.Lerp(toe,edge,blend);
+                    float eased=blend*blend*(3-2*blend);
+                    p.y=Mathf.Lerp(toeHeight+.015f,top,eased);
+                    vertices.Add(p);
+                    if (row==0 || col==0) continue;
+                    int a=(row-1)*columns+col-1,b=a+columns;
+                    triangles.AddRange(new[] {a,b,a+1,a+1,b,b+1});
+                }
+            }
+            var mesh=new Mesh {name="Grounded Central Cut"};
+            mesh.SetVertices(vertices);mesh.SetTriangles(triangles,0);mesh.RecalculateNormals();mesh.RecalculateBounds();
+            const string path="Assets/Geometry/CentralcutFloor.asset";
+            var saved=AssetDatabase.LoadAssetAtPath<Mesh>(path);
+            if(saved) {EditorUtility.CopySerialized(mesh,saved);Object.DestroyImmediate(mesh);}
+            else {AssetDatabase.CreateAsset(mesh,path);saved=mesh;}
+            var terrain=new GameObject("Central cut / continuous floor",typeof(MeshFilter),typeof(MeshRenderer),typeof(MeshCollider));
+            terrain.transform.SetParent(root);
+            terrain.GetComponent<MeshFilter>().sharedMesh=saved;
+            terrain.GetComponent<MeshRenderer>().sharedMaterial=sand;
+            terrain.GetComponent<MeshCollider>().sharedMesh=saved;
+            // No high walls along the middle: both shoulders are entrances from the flats.
+            for(int i=0;i<centers.Count;i+=2)
+            {
+                Vector3 p=centers[i];p.y=Mathf.Max(p.y,SupportHeight(p,ground,p.y)+.04f)+.04f;
+                var stripe=Block(root,"Central cut / route stripe",p,new Vector3(2,.04f,.6f),marker);
+                stripe.transform.rotation=Quaternion.LookRotation(Flat(centers[Mathf.Min(i+1,centers.Count-1)]-centers[Mathf.Max(0,i-1)]));
+                stripe.layer=2;Object.DestroyImmediate(stripe.GetComponent<Collider>());
+            }
+        }
+
+        static float SupportHeight(Vector3 p,List<Collider> floors,float fallback)
+        {
+            bool found=false;float height=float.NegativeInfinity;
+            foreach(var floor in floors)
+                if(floor.Raycast(new Ray(p+Vector3.up*60,Vector3.down),out var hit,120))
+                {found=true;height=Mathf.Max(height,hit.point.y);}
+            // The yard floor is built after the cut. Match its exact footprint and height.
+            Vector3 yard=CanyonLayout.PumpCenter;
+            if(Mathf.Abs(p.x-yard.x)<=46 && Mathf.Abs(p.z-yard.z)<=52)
+            {found=true;height=Mathf.Max(height,yard.y);}
+            return found ? height : fallback;
         }
 
         static void Corridor(Transform root,string title,Vector3[] points,float width,float startWidth,float endWidth,Material sand,Material rock,Material marker)
