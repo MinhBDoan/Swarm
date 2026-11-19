@@ -19,10 +19,12 @@ namespace Swarm
         }
 
         // An elite is an ordinary archetype with stronger stats, never the Sentinel.
-        public bool SpawnEliteEnemy(Vector3 position,EnemyKind kind)
+        public bool SpawnEliteEnemy(Vector3 position,EnemyKind kind,bool challenge=false)
         {
-            if(IsCoopClient || enemies.Count>=SwarmEnemyLimit || !SpawnEnemy(position,false,kind))return false;
-            PromoteEnemyToElite(enemies[enemies.Count-1]);
+            if(IsCoopClient || enemies.Count>=SwarmEnemyLimit+(challenge ? 20 : 0) || !SpawnEnemy(position,false,kind))return false;
+            var enemy=enemies[enemies.Count-1];
+            enemy.challengeElite=challenge;
+            PromoteEnemyToElite(enemy);
             return true;
         }
 

@@ -156,6 +156,7 @@ namespace Swarm
             ResetDownload();
             ResetBoss();
             ResetEconomy();
+            ResetElites();
             CreateCache(); CreateSupplies(); CreateShops();
             WeaponStatus = "Searching for a visible enemy";
             Notice = "Weapon fires automatically. Keep moving and collect green XP.";
@@ -196,6 +197,7 @@ namespace Swarm
             ResetDownload();
             ResetBoss();
             ResetEconomy();
+            ResetElites();
             bonusPending=0; BonusUpgrade=false; bonusTiers.Clear(); currentBonusTier=-1;
         }
         void Update()
@@ -763,6 +765,7 @@ namespace Swarm
             var enemy = enemies[index];
             Vector3 position = enemy.body.transform.position + Vector3.up*.5f;
             Spark(enemy.body.transform.position+Vector3.up,.4f,1.3f,.2f,enemy.elite ? blastMaterial : sparkMaterial);
+            MaybeDropEliteChest(enemy);
             enemy.body.SetActive(false); Destroy(enemy.body); enemies.RemoveAt(index); Kills++; SharedMoney+=enemy.elite ? 40 : 5;
             var body = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             body.name = "XP +3"; body.layer = 2; body.transform.SetParent(root);
@@ -898,7 +901,7 @@ namespace Swarm
                 if (label.z <= 0 || label.x < 0 || label.x > Screen.width || label.y < 0 || label.y > Screen.height ||
                     Vector3.Distance(Camera.main.transform.position,anchor) > 35 || Physics.Linecast(Camera.main.transform.position,anchor,WorldMask)) continue;
                 if (enemyLabel == null) enemyLabel = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontSize = 12 };
-                string title = enemy.elite ? $"SENTINEL {enemy.health:0}/{enemy.maxHealth:0}" : enemy.kind.ToString().ToUpperInvariant();
+                string title = enemy.elite ? $"SENTINEL {enemy.health:0}/{enemy.maxHealth:0}" : (enemy.eliteVariant ? "ELITE " : "")+enemy.kind.ToString().ToUpperInvariant();
                 if (enemy.elite) title += " / "+SentinelMoves[enemy.sentinelMove];
                 if (enemy.kind==EnemyKind.Charger)
                     title += enemy.chargePhase==ChargePhase.WindingUp ? " / WIND-UP" :

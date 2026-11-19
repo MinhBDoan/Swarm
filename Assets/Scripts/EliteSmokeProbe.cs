@@ -91,11 +91,16 @@ namespace Swarm
             for(int i=Enemies().Count;i<limit;i++)if(!combat.SpawnEnemy(new Vector3(0,0,15)))break;
             int before=combat.EliteVariantsSpawned;schedule.Invoke(combat,null);
             bool cap=Enemies().Count==limit && combat.EliteVariantsSpawned==before && !combat.SpawnEliteEnemy(new Vector3(0,0,15),EnemyKind.Chaser);
+            bool challengeReserve=combat.SpawnEliteEnemy(new Vector3(0,0,15),EnemyKind.Charger,true) &&
+                (bool)Get(Enemies()[Enemies().Count-1],"challengeElite");
+            for(int i=Enemies().Count;i<limit+20;i++)
+                if(!combat.SpawnEliteEnemy(new Vector3(0,0,15),EnemyKind.Chaser,true))break;
+            challengeReserve &= Enemies().Count==limit+20 && !combat.SpawnEliteEnemy(new Vector3(0,0,15),EnemyKind.Chaser,true);
             combat.AutoSpawn=false;combat.Begin();
             bool reset=combat.EliteVariantsSpawned==0 && combat.EliteWavesSpawned==0 && Mathf.Abs(combat.NextEliteWaveAt-45)<.01f;
-            passed &= boss && timing && pause && cap && reset;
+            passed &= boss && timing && pause && cap && challengeReserve && reset;
             combat.StopCombat();
-            Debug.Log($"SWARM_ELITE_TEST: {(passed ? "PASS" : "FAIL")} bossSeparation={boss} schedule={timing} pause={pause} cap={cap} reset={reset}");
+            Debug.Log($"SWARM_ELITE_TEST: {(passed ? "PASS" : "FAIL")} bossSeparation={boss} schedule={timing} pause={pause} cap={cap} challengeReserve={challengeReserve} reset={reset}");
             Application.Quit(passed ? 0 : 1);
         }
     }
