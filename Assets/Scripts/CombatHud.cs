@@ -235,6 +235,8 @@ namespace Swarm
         }
         void DrawObjectivePanel(float width)
         {
+            if (ShowFreeChestObjective) { DrawFreeChestObjective(width); return; }
+            if (ShowEliteChallengeObjective) { DrawEliteChallengeObjective(width); return; }
             if (ShowBossObjective) { DrawBossObjective(width); return; }
             if(ShowSupplyObjective){DrawSupplyObjective(width);return;}
             if (ShowDownloadObjective)

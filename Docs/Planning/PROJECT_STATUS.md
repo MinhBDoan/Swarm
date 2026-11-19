@@ -80,3 +80,7 @@ The game should not be PC-intensive. Specific target hardware and budgets remain
 Development probes exist for movement, networking/co-op, loadouts, economy, downloads, routes/layout, central pursuit, Charger, and boss behavior. See `Assets/Scripts/*SmokeProbe.cs` and their command-line argument parsing before running them. Some probes accelerate time or modify stats; do not treat their results as balance or performance evidence.
 
 For each new change record: source revision/build identifier, scenario, party size, pass/fail, relevant logs/screenshots, and limitations. Use real gameplay for feel; use profiler measurements for performance.
+
+## November 18 elite encounters
+
+Periodic gold-marked elite variants preserve the four ordinary archetypes, with higher health/damage. Three randomized optional elite challenge spots spawn finite paced squads and award a free Epic party chest after every guard is defeated. Ordinary elites sometimes drop free Rare party chests. Free chest interaction costs no money and gives each party member an independent upgrade choice with the existing group pause. See [elite encounter playtest](ELITE_CHALLENGES_PLAYTEST.md) for tuning and validation.

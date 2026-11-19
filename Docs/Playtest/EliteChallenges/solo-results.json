@@ -1,0 +1,52 @@
+[
+  {
+    "test": "elites",
+    "exit": 0,
+    "seconds": 1.9,
+    "results": [
+      "SWARM_RUN_LAYOUT: seed=1573337783 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+      "SWARM_RUN_LAYOUT: seed=1625671848 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+      "SWARM_RUN_LAYOUT: seed=1500045898 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+      "SWARM_RUN_LAYOUT: seed=1332656384 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+      "SWARM_RUN_LAYOUT: seed=723007791 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+      "SWARM_RUN_LAYOUT: seed=1702259723 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+      "SWARM_RUN_LAYOUT: seed=54485187 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+      "SWARM_ELITE_TEST: PASS bossSeparation=True schedule=True pause=True cap=True challengeReserve=True reset=True"
+    ],
+    "exceptions": []
+  },
+  {
+    "test": "challenges",
+    "exit": 0,
+    "seconds": 1.2,
+    "results": [
+      "SWARM_RUN_LAYOUT: seed=1567872231 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+      "SWARM_RUN_LAYOUT: seed=511590521 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+      "SWARM_ELITECHALLENGE_TEST: PASS"
+    ],
+    "exceptions": []
+  },
+  {
+    "test": "freechests",
+    "exit": 0,
+    "seconds": 1.3,
+    "results": [
+      "SWARM_RUN_LAYOUT: seed=772527502 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+      "SWARM_RUN_LAYOUT: seed=284570851 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+      "SWARM_FREE_CHEST_TEST: PASS"
+    ],
+    "exceptions": []
+  },
+  {
+    "test": "layout",
+    "exit": 0,
+    "seconds": 2.8,
+    "results": [
+      "SWARM_RUN_LAYOUT: seed=927844764 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+      "SWARM_RUN_LAYOUT: seed=1224902527 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+      "SWARM_RUN_LAYOUT: seed=1506827765 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+      "SWARM_RUN_LAYOUT_TEST: PASS role=solo"
+    ],
+    "exceptions": []
+  }
+]

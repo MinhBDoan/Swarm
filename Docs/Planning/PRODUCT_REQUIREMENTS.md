@@ -1,6 +1,6 @@
 # Swarm — product requirements
 
-**Status:** review draft v0.8 · November 14, 2026
+**Status:** review draft v0.9 / November 18, 2026
 
 ## Vision
 
@@ -56,6 +56,7 @@ Three areas provide up to 30 minutes of pre-overtime countdown time if every cou
 | BUILD-02 | Confirmed | Support skipping unwanted offers and rarity-based upgrades. Rarity can improve stats or add effects; exact distributions and effect rules remain tuning decisions. |
 | COMBAT-01 | Confirmed | Automatic targeting and firing support movement-focused combat. Enemy roles should be recognizable through appearance and behavior. |
 | COMBAT-02 | Confirmed | Swarm pressure and enemy strength increase with elapsed time. Difficulty must not directly scale to the players' current weapons or damage output. Party-size tuning may be used. |
+| COMBAT-03 | Confirmed | Elite versions periodically join ordinary waves, retain their archetype, and have modestly higher health and attack damage. Ordinary elites occasionally drop a free chest. |
 | COMBAT-04 | Confirmed; initial value provisional | Each of the three run areas starts its own countdown at 10:00; POIs within an area share that countdown. The current canyon is the only implemented area. Display the current area and its remaining time. Waves intensify with elapsed time. At 00:00, enter ongoing overwhelming overtime waves whose strength and numbers continue increasing to eventually defeat players who delay too long. Do not treat expiry as an automatic loss or boss summon. Validate the transition and continued arrivals in solo and co-op. |
 | COMBAT-03 | Confirmed | Chargers are relatively tanky and apply directional knockback on charge contact. The Sentinel cycles through several readable attacks, including a distance-limited charge followed by a ground pound and knockback. |
 | WORLD-01 | Confirmed | Connected POIs have distinct activities and movement opportunities. Travel should feel substantial without becoming an empty corridor. |
@@ -64,6 +65,7 @@ Three areas provide up to 30 minutes of pre-overtime countdown time if every cou
 | WORLD-04 | Confirmed | Close accidental map holes. Preserve the deliberately accepted quarter-pipe fall-off as a skill-check exception; its exact location and recovery behavior need documenting. |
 | OBJ-01 | Confirmed | Download terminals activate by entering the zone. One occupant progresses the download; additional occupants modestly accelerate it. Progress decays slowly when empty. |
 | OBJ-02 | Confirmed | Terminals have color-coded reward tiers and tier-dependent times. They call enemy packs while occupied, making the reward a risk decision. |
+| OBJ-03 | Confirmed | Optional activatable challenge spots spawn many elites. Killing the complete challenge squad earns one free chest whose upgrade choices reward the whole party and pause gameplay until resolved. |
 | OBJ-03 | Confirmed; pricing details open | Keep shared party money and shared XP. Chests/crates and terminals grant upgrade rewards to the whole group; each player makes their own selection. Paid crates use the shared wallet, and higher prices can offer higher tiers. Chest tiers are randomized. Each tier has a fixed starting price, and chest prices rise as the party buys more chests. Tier probabilities, starting values, growth formula, affected tiers, and purchase-counter reset scope remain open. |
 | BOSS-01 | Confirmed | Include an interactable boss console with a clear activation area and understandable feedback. Players can choose to activate the boss before the 10-minute deadline; overtime pressure makes delaying that choice dangerous. The countdown and wave escalation continue during the boss fight, including overtime if reached. Activating the boss late does not cancel overtime. There is no separate boss timer: fight until the boss is killed or the run ends. |
 | WORLD-05 | Confirmed | Keep terrain/routes/POIs fixed while randomizing chest, terminal, boss-console/arena and shop locations each run. Choose reachable authored candidates with room for the activity. The host chooses one shared layout; it stays fixed during the run and is identical for all party members. |
@@ -115,3 +117,7 @@ These criteria require player testing as well as automated checks. Total run dur
 4. How should queued group rewards interact with downed players and revival? XP/chests/terminals are party-wide; shops grant personal upgrades without pausing. Independent choices and group-event pauses remain confirmed.
 5. What are chest tier probabilities, tier starting prices, and the purchase-driven price increase formula? Does each purchase raise all tiers or only that tier, and does the purchase counter reset each area or each run? Randomized tiers, tier-based starting prices, shared spending, and group rewards are confirmed.
 6. What minimum PC, resolution, and frame-rate target should we support? Boss duration is until killed, and the third-area setting stays undecided.
+
+## November 18 elite encounter tuning
+
+Implemented starting values, subject to playtesting: elites have 1.5× health and 1.25× attack damage, with gold collars and labels; periodic packs begin at 45 seconds and recur roughly every 35 active seconds when capacity allows. Ordinary elite kills have a 20% chance of a free Rare party chest. Three challenge spots use the shared randomized run layout. One challenge runs at a time; each spot is usable once per run, sending 10 elites solo plus two per extra player (maximum 20), in paced packs. Clearing the full squad earns one guaranteed Epic free party chest. Challenge guards do not roll additional random chests. These numbers, tiers, pacing, and visual markers are provisional implementation choices rather than finalized balance.

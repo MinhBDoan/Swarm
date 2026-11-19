@@ -156,8 +156,8 @@ namespace Swarm
             ResetDownload();
             ResetBoss();
             ResetEconomy();
-            ResetElites();
-            CreateCache(); CreateSupplies(); CreateShops();
+            ResetElites(); ResetEliteChallenges(); ResetFreeChests();
+            CreateCache(); CreateSupplies(); CreateShops(); CreateEliteChallenges();
             WeaponStatus = "Searching for a visible enemy";
             Notice = "Weapon fires automatically. Keep moving and collect green XP.";
             if (NetworkActive) StartParty();
@@ -197,7 +197,7 @@ namespace Swarm
             ResetDownload();
             ResetBoss();
             ResetEconomy();
-            ResetElites();
+            ResetElites(); ResetEliteChallenges(); ResetFreeChests();
             bonusPending=0; BonusUpgrade=false; bonusTiers.Clear(); currentBonusTier=-1;
         }
         void Update()
@@ -234,7 +234,7 @@ namespace Swarm
             if (AutoFire) TickLoadout(dt);
             TickBullets(dt);
             TickOrbs(dt);
-            TickCache(dt); TickDownload(dt);
+            TickCache(dt); TickDownload(dt); TickEliteChallenges(dt);
             if (Health <= 0 || ChoosingUpgrade || Won) PauseAgents();
         }
         void CreateCache()
@@ -913,7 +913,7 @@ namespace Swarm
                 enemyLabel.normal.textColor = Color.black; GUI.Label(new Rect(rect.x+1,rect.y+1,rect.width,rect.height),title,enemyLabel);
                 enemyLabel.normal.textColor = Color.white; GUI.Label(rect,title,enemyLabel);
             }
-            DrawSupplyLabels();
+            DrawSupplyLabels(); DrawChallengeLabels();
         }
         void OnDestroy()
         {
@@ -921,12 +921,13 @@ namespace Swarm
             DisposeHud();
             DisposeWeaponPresentation();
             DisposeCoop();
-            DisposeShops();
+            DisposeShops(); DisposeEliteChallenges(); ResetFreeChests();
             if (navInstance.valid) navInstance.Remove();
             if (navData) Destroy(navData);
             DestroySupplyMaterials();
             Destroy(enemyMaterial); Destroy(bulletMaterial); Destroy(xpMaterial);
             Destroy(eliteMaterial);
+            if(eliteCollarMaterial) Destroy(eliteCollarMaterial);
             Destroy(sparkMaterial); Destroy(blastMaterial);
             Destroy(runnerMaterial); Destroy(spitterMaterial); Destroy(chargerMaterial);
             foreach (var material in weaponMaterials.Values) Destroy(material);

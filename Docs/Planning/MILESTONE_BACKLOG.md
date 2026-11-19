@@ -69,3 +69,7 @@ Open decisions that require player input:
 Agree a batch → implement and verify → integrate → deliver one focused playtest → address findings. Ask the player to judge movement feel, navigation, difficulty, reward value, and visual clarity, rather than perform repetitive setup or discover whether basic systems compile.
 
 Track cycle time to a playable build, regressions found after integration, and player feedback. More agents are worthwhile only if they improve those outcomes.
+
+### Elite encounter follow-up — November 18
+
+Implemented periodic elite variants, three randomized elite challenge spots, and free party chests. Review elite durability/damage, 45/35-second cadence, 20% drop chance, and 10–20-guard challenge squads in actual movement/combat play. Assess reward frequency and map exploration value before adding more spots; keep live counts bounded. Functional probes do not establish six-human balance or minimum-hardware performance.

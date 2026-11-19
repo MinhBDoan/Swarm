@@ -49,6 +49,8 @@ namespace Swarm
             public string notice,bossMove;
             public RunLayoutData layout;
             public ShopPlayerState shop;
+            public EliteChallengeSnapshot challenge;
+            public FreeChestSnapshot freeChests;
             public PartyPlayerState player;
             public VisualState[] visuals;
             public int revives,menuPauseCount; public PartyMemberInfo[] roster;
@@ -210,7 +212,7 @@ namespace Swarm
                     if (AutoFire) TickLoadout(dt);
                 }
                 SwitchContext(NetworkManager.Singleton.LocalClientId);
-                TickBullets(dt); TickOrbs(dt); TickCache(dt); TickDownload(dt);
+                TickBullets(dt); TickOrbs(dt); TickCache(dt); TickDownload(dt); TickEliteChallenges(dt);
             }
             else PauseAgents();
             SwitchContext(NetworkManager.Singleton.LocalClientId); SaveContext();
@@ -322,6 +324,8 @@ namespace Swarm
             ulong original=contextId; SwitchContext(sender);
             if(command.action=="menu" && (command.choice==0 || command.choice==1)) ApplyMenuPauseCommand(sender,command.choice!=0);
             else if(command.action=="supply")TrySupplyInteraction(command.choice);
+            else if (command.action=="free-chest") TryFreeChest(command.choice);
+            else if (command.action=="elite-challenge") TryEliteChallenge(command.choice);
             else if (command.action=="boss-console") TryBossConsole();
             else if (command.action=="boss-ready") ReadyForBoss();
             else if (command.action=="cache") StartCacheChallenge();
@@ -416,6 +420,7 @@ namespace Swarm
                     spawned=waveSpawned,rest=restClock,resting=Resting,elapsed=elapsed,cacheSeconds=CacheSecondsRemaining,
                     notice=Notice,bossMove=SentinelAttackText,player=entry.Value,visuals=visuals,revives=reviveSerial,
                     layout=ActiveRunLayout,shop=ShopSnapshotFor(entry.Key),
+                    challenge=BuildChallengeSnapshot(),freeChests=BuildFreeChestSnapshot(),
                     menuPauseCount=MenuPauseCount,roster=roster.ToArray() };
                 SendJson("swarm.combat.state",entry.Key,JsonUtility.ToJson(packet));
             }
@@ -426,7 +431,7 @@ namespace Swarm
             var packet=JsonUtility.FromJson<PartySnapshot>(ReadJson(reader));
             if (packet==null || packet.player==null || packet.player.id!=NetworkManager.Singleton.LocalClientId) return;
             bool newRun=packet.run!=runId, wasChoosing=ChoosingUpgrade;
-            if (newRun) { ResetLoadout(); ResetShops(); ResetMenuPauseState(); seenRevive=0; seenKnockback=0; ReplicatedWeaponShapeMask=0; }
+            if (newRun) { ResetLoadout(); ResetShops(); ResetEliteChallenges(); ResetFreeChests(); ResetMenuPauseState(); seenRevive=0; seenKnockback=0; ReplicatedWeaponShapeMask=0; }
             if (newRun && player) player.Respawn();
             if (packet.revives!=seenRevive && Health<=0 && packet.player.health>0 && player) player.Respawn();
             seenRevive=packet.revives; runId=packet.run; contextId=packet.player.id;
@@ -438,6 +443,8 @@ namespace Swarm
             LoadState(packet.player); Running=packet.running; Won=packet.won; PartyPaused=packet.paused; PartyDefeated=packet.defeated;
             ApplyRunLayout(packet.layout);
             AcceptShopSnapshot(packet.shop);
+            AcceptChallengeSnapshot(packet.challenge);
+            AcceptFreeChestSnapshot(packet.freeChests);
             AcceptMenuPauseSnapshot(packet.menuPauseCount);
             Wave=packet.wave; Kills=packet.kills; remoteEnemyCount=packet.totalEnemies; remoteOrbCount=packet.orbs;
             cacheIndex=Mathf.Clamp(packet.selectedCache,0,cacheStates.Length-1);
@@ -463,7 +470,7 @@ namespace Swarm
             if (ChoosingUpgrade || Won || PartyDefeated || LocalMenuOpen) ReleaseMouse();
             else if (wasChoosing || newRun) CaptureMouse();
             ApplyVisuals(packet.visuals); ReceivedCombatSnapshots++;
-            if (!Running) { ClearParty(); ResetShops(); RestoreRunLayout(); }
+            if (!Running) { ClearParty(); ResetShops(); ResetEliteChallenges(); ResetFreeChests(); RestoreRunLayout(); }
         }
         void ApplyVisuals(VisualState[] visuals)
         {

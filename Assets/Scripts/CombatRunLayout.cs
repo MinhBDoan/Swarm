@@ -10,12 +10,12 @@ namespace Swarm
         [Serializable] public class RunLayoutData
         {
             public int seed;
-            public Vector3[] terminals,chests,shops;
+            public Vector3[] terminals,chests,shops,challenges;
             public Vector3 bossConsole,bossSpawn;
         }
         public RunLayoutData ActiveRunLayout { get; private set; }
         public int RunSeed => ActiveRunLayout!=null ? ActiveRunLayout.seed : 0;
-        static Vector3[] authoredTerminals,authoredChests,authoredShops;
+        static Vector3[] authoredTerminals,authoredChests,authoredShops,authoredChallenges;
         static Vector3 authoredBossConsole,authoredBossSpawn;
         static int previousLayoutSeed;
         void EnsureAuthoredLayout()
@@ -24,6 +24,7 @@ namespace Swarm
             authoredTerminals=(Vector3[])CanyonLayout.DownloadCenters.Clone();
             authoredChests=(Vector3[])MoneyCrateFloors.Clone();
             authoredShops=(Vector3[])ShopLocations.Clone();
+            authoredChallenges=(Vector3[])ChallengeLocations.Clone();
             authoredBossConsole=CanyonLayout.BossConsole;authoredBossSpawn=CanyonLayout.BossSpawn;
         }
         void RestoreRunLayout()
@@ -32,6 +33,7 @@ namespace Swarm
             Array.Copy(authoredTerminals,CanyonLayout.DownloadCenters,authoredTerminals.Length);
             Array.Copy(authoredChests,MoneyCrateFloors,authoredChests.Length);
             Array.Copy(authoredShops,ShopLocations,authoredShops.Length);
+            Array.Copy(authoredChallenges,ChallengeLocations,3);
             CanyonLayout.BossConsole=authoredBossConsole;CanyonLayout.BossSpawn=authoredBossSpawn;
             ActiveRunLayout=null;
             RefreshDownloadLocations();RefreshBossLocation();
@@ -39,12 +41,13 @@ namespace Swarm
         void ApplyRunLayout(RunLayoutData data)
         {
             if(data==null || data.seed==0 || data.terminals==null || data.terminals.Length!=CanyonLayout.DownloadCount ||
-                data.chests==null || data.chests.Length!=MoneyCrateCount || data.shops==null || data.shops.Length!=3)return;
+                data.chests==null || data.chests.Length!=MoneyCrateCount || data.shops==null || data.shops.Length!=3 || data.challenges==null || data.challenges.Length!=3)return;
             if(ActiveRunLayout!=null && ActiveRunLayout.seed==data.seed)return;
             EnsureAuthoredLayout();ActiveRunLayout=data;
             Array.Copy(data.terminals,CanyonLayout.DownloadCenters,data.terminals.Length);
             Array.Copy(data.chests,MoneyCrateFloors,data.chests.Length);
             Array.Copy(data.shops,ShopLocations,3);
+            Array.Copy(data.challenges,ChallengeLocations,3);
             CanyonLayout.BossConsole=data.bossConsole;CanyonLayout.BossSpawn=data.bossSpawn;
             RefreshDownloadLocations();RefreshBossLocation();
             Physics.SyncTransforms();
@@ -115,7 +118,7 @@ namespace Swarm
             if(!selected)throw new InvalidOperationException("No valid boss arena is reachable.");
             reserved.Add(console);reserved.Add(boss);
             var layout=new RunLayoutData{seed=seed,bossConsole=console,bossSpawn=boss,
-                terminals=new Vector3[CanyonLayout.DownloadCount],chests=new Vector3[MoneyCrateCount],shops=new Vector3[3]};
+                terminals=new Vector3[CanyonLayout.DownloadCount],chests=new Vector3[MoneyCrateCount],shops=new Vector3[3],challenges=new Vector3[3]};
             // Preserve exploration across the POIs, with three guaranteed central slots.
             for(int i=0;i<layout.terminals.Length;i++)
             {
@@ -131,6 +134,7 @@ namespace Swarm
             }
             for(int i=0;i<layout.chests.Length;i++)layout.chests[i]=PickLayoutPoint(pool,reserved,random);
             for(int i=0;i<3;i++)layout.shops[i]=PickLayoutPoint(pool,reserved,random);
+            for(int i=0;i<3;i++)layout.challenges[i]=PickLayoutPoint(pool,reserved,random);
             ApplyRunLayout(layout);
             Debug.Log($"SWARM_RUN_LAYOUT: seed={seed} terminals={layout.terminals.Length} chests={layout.chests.Length} shops=3 boss={BossLocationName} candidates={pool.Count}");
         }

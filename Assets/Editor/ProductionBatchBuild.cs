@@ -53,6 +53,8 @@ namespace Swarm.Editor
 
         public static void BuildCurrentRandomEncounters() { BuildTo("Builds/Swarm-RandomEncountersShops/Swarm.exe"); }
 
+        public static void BuildEliteChallenges() { BuildTo("Builds/Swarm-EliteChallenges/Swarm.exe"); }
+
         static void BuildTo(string destination)
         {
             var result=BuildPipeline.BuildPlayer(new[]{"Assets/Scenes/CanyonPlayground.unity"},

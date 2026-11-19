@@ -1,3 +1,5 @@
+Latest elite/challenge playtest: **Builds/Swarm-EliteChallenges/Swarm.exe**. See [elite challenge notes](Docs/Planning/ELITE_CHALLENGES_PLAYTEST.md).
+
 # Swarm movement prototype
 
 Latest encounter/shop playtest: **Builds/Swarm-RandomEncountersShops/Swarm.exe**. See

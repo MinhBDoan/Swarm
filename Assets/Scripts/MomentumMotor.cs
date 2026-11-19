@@ -45,12 +45,14 @@ namespace Swarm
             if (CombatPlayground.BlocksInput) return;
             bool interact = Input.GetKeyDown(KeyCode.E);
             bool shopInteraction = interact && !IsZiplining && CombatPlayground.Instance && CombatPlayground.Instance.TryOpenShop();
-            bool bossInteraction = interact && !shopInteraction && !IsZiplining && CombatPlayground.Instance &&
+            bool rewardInteraction = interact && !shopInteraction && !IsZiplining && combat &&
+                (combat.TryFreeChest() || combat.TryEliteChallenge());
+            bool bossInteraction = interact && !shopInteraction && !rewardInteraction && !IsZiplining && CombatPlayground.Instance &&
                 CombatPlayground.Instance.TryBossConsole();
             if (shopInteraction) return;
             if (Cursor.lockState != CursorLockMode.Locked && !Application.isBatchMode) return;
             if (Input.GetKeyDown(KeyCode.R) || transform.position.y < -25f) Respawn();
-            if (interact && !bossInteraction)
+            if (interact && !bossInteraction && !rewardInteraction)
             {
                 if (IsZiplining) ReleaseZipline(false);
                 else if (!(CombatPlayground.Instance && (CombatPlayground.Instance.TrySupplyInteraction() || CombatPlayground.Instance.StartCacheChallenge())))

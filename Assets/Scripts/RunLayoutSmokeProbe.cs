@@ -56,6 +56,7 @@ namespace Swarm
             foreach (var p in layout.terminals) Add(p);
             foreach (var p in layout.chests) Add(p);
             foreach (var p in layout.shops) Add(p);
+            foreach (var p in layout.challenges) Add(p);
             Add(layout.bossConsole);Add(layout.bossSpawn);
             uint hash=2166136261;
             foreach (char c in text.ToString()) hash=(hash^c)*16777619;
@@ -69,6 +70,7 @@ namespace Swarm
                 Same(layout.terminals,CanyonLayout.DownloadCenters) &&
                 Same(layout.chests,CombatPlayground.MoneyCrateFloors) &&
                 Same(layout.shops,CombatPlayground.ShopLocations) &&
+                Same(layout.challenges,CombatPlayground.ChallengeLocations) &&
                 Same(layout.bossConsole,CanyonLayout.BossConsole) && Same(layout.bossSpawn,CanyonLayout.BossSpawn);
         }
 
@@ -98,9 +100,9 @@ namespace Swarm
         void CheckHostGeometry(CombatPlayground combat)
         {
             var layout=combat.ActiveRunLayout;
-            Check(layout!=null && layout.terminals.Length==8 && layout.chests.Length==7 && layout.shops.Length==3,"layout dimensions");
+            Check(layout!=null && layout.terminals.Length==8 && layout.chests.Length==7 && layout.shops.Length==3 && layout.challenges.Length==3,"layout dimensions");
             if (layout==null) return;
-            var points=new List<Vector3>();points.AddRange(layout.terminals);points.AddRange(layout.chests);points.AddRange(layout.shops);
+            var points=new List<Vector3>();points.AddRange(layout.terminals);points.AddRange(layout.chests);points.AddRange(layout.shops);points.AddRange(layout.challenges);
             points.Add(layout.bossConsole);points.Add(layout.bossSpawn);
             bool support=true,navigation=true,separation=true;
             NavMesh.SamplePosition(new Vector3(0,0,-15),out var start,6,NavMesh.AllAreas);
