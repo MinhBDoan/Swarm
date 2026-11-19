@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Swarm
 {
     [RequireComponent(typeof(CharacterController))]
-    public class MomentumMotor : MonoBehaviour
+    public partial class MomentumMotor : MonoBehaviour
     {
         public float runSpeed = 11f, groundAcceleration = 28f, airAcceleration = 7f;
         public float jumpSpeed = 10f, gravity = 25f;
@@ -43,6 +43,12 @@ namespace Swarm
                 return;
             }
             if (CombatPlayground.BlocksInput) return;
+            if(IsGrinding)
+            {
+                if(Cursor.lockState == CursorLockMode.Locked || Application.isBatchMode)
+                    StepGrinding(Input.GetAxis("Mouse X"),Input.GetButtonDown("Jump"),Input.GetKeyDown(KeyCode.LeftControl)||Input.GetKeyDown(KeyCode.C),Mathf.Min(Time.deltaTime,.033f));
+                return;
+            }
             bool interact = Input.GetKeyDown(KeyCode.E);
             bool shopInteraction = interact && !IsZiplining && CombatPlayground.Instance && CombatPlayground.Instance.TryOpenShop();
             bool rewardInteraction = interact && !shopInteraction && !IsZiplining && combat &&
@@ -56,7 +62,7 @@ namespace Swarm
             {
                 if (IsZiplining) ReleaseZipline(false);
                 else if (!(CombatPlayground.Instance && (CombatPlayground.Instance.TrySupplyInteraction() || CombatPlayground.Instance.StartCacheChallenge())))
-                    TryGrabNearestZipline(view.forward);
+                    if(!TryGrabNearestRail(view.forward)) TryGrabNearestZipline(view.forward);
             }
             Simulate(new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")),
                 Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.C), Input.GetButtonDown("Jump"),
@@ -65,6 +71,7 @@ namespace Swarm
         // Input-independent stepping also supports controlled movement experiments.
         public void Simulate(Vector2 input, bool slideHeld, bool jumpPressed, float dt)
         {
+            if(IsGrinding){ StepGrinding(0,jumpPressed,slideHeld && !crouchWasHeld,dt); crouchWasHeld=slideHeld; return; }
             bool crouchPressed = slideHeld && !crouchWasHeld;
             crouchWasHeld = slideHeld;
             if (IsZiplining)
@@ -179,7 +186,7 @@ namespace Swarm
         }
         public bool TryGrabZipline(MiningZipline line, Vector3 look)
         {
-            if (!line || IsZiplining || Time.time < regrabUntil || line.Length < .1f) return false;
+            if (!line || IsGrinding || IsZiplining || Time.time < regrabUntil || line.Length < .1f) return false;
             Vector3 point = line.ClosestPoint(transform.position);
             if (Vector3.Distance(transform.position,point) > 2.2f || Physics.Linecast(transform.position,point,1 << 0)) return false;
             Vector3 offset;
@@ -245,12 +252,14 @@ namespace Swarm
         }
         public void ApplyImpulse(Vector3 impulse)
         {
+            if(IsGrinding) ReleaseGrind(false);
             if (zipline) ReleaseZipline(false);
             Velocity+=impulse; impulseUntil=Time.time+.18f;
             jumpTime=groundedTime=wallTime=-100;
         }
         public void Respawn()
         {
+            grindRail=null; railRegrabUntil=0;
             zipline = null; regrabUntil = 0; impulseUntil=0;
             slideAge=-1; slideHopReady=true; wasGrounded=wasSliding=false; SlideHopBonus=0; lastSlideHopAt=-100;
             controller.enabled = false; transform.position = spawn; controller.enabled = true;
@@ -258,6 +267,7 @@ namespace Swarm
         }
         void OnGUI()
         {
+            DrawGrindHud();
             if (CombatPlayground.Instance && CombatPlayground.Instance.Running) return;
             if (CombatPlayground.Instance && CombatPlayground.Instance.BossConsoleInReach)
                 GUI.Label(new Rect(18,233,470,28),"Press F to start a run, then E to summon the Sentinel.");

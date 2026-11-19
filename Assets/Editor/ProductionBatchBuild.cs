@@ -55,6 +55,8 @@ namespace Swarm.Editor
 
         public static void BuildEliteChallenges() { BuildTo("Builds/Swarm-EliteChallenges/Swarm.exe"); }
 
+        public static void BuildGrindRails() { BuildTo("Builds/Swarm-GrindRails/Swarm.exe"); }
+
         static void BuildTo(string destination)
         {
             var result=BuildPipeline.BuildPlayer(new[]{"Assets/Scenes/CanyonPlayground.unity"},

@@ -1,0 +1,45 @@
+[
+  {
+    "test": "grind",
+    "exit": 0,
+    "seconds": 1.6,
+    "results": [
+      "SWARM_RUN_LAYOUT: seed=1201671737 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+      "SWARM_RUN_LAYOUT: seed=1874253997 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+      "SWARM_GRIND_TEST: PASS"
+    ],
+    "exceptions": []
+  },
+  {
+    "test": "movement",
+    "exit": 0,
+    "seconds": 8.1,
+    "results": [
+      "SWARM_MOVEMENT_TEST: PASS enteredFast=True slowed=True rollback=True flatCarry=True jumpCarry=True"
+    ],
+    "exceptions": []
+  },
+  {
+    "test": "zipline",
+    "exit": 0,
+    "seconds": 1.3,
+    "results": [
+      "SWARM_ZIPLINE_HELD_ENTRY_TEST: PASS",
+      "SWARM_ZIPLINE_CROUCH_TEST: PASS",
+      "SWARM_ZIPLINE_TEST: PASS up=True down=True lookAround=True right=True left=True fallback=True entrySpeed=True hopCarry=True regrabDelay=True endpoint=True collision=True crossing=True finalPosition=(23.03, 8.90, 44.02)"
+    ],
+    "exceptions": []
+  },
+  {
+    "test": "layout",
+    "exit": 0,
+    "seconds": 2.6,
+    "results": [
+      "SWARM_RUN_LAYOUT: seed=1409768596 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+      "SWARM_RUN_LAYOUT: seed=222584272 terminals=8 chests=7 shops=3 boss=PUMPING YARD candidates=42",
+      "SWARM_RUN_LAYOUT: seed=1114355991 terminals=8 chests=7 shops=3 boss=CENTRAL FLATS candidates=42",
+      "SWARM_RUN_LAYOUT_TEST: PASS role=solo"
+    ],
+    "exceptions": []
+  }
+]

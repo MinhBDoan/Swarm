@@ -84,3 +84,7 @@ For each new change record: source revision/build identifier, scenario, party si
 ## November 18 elite encounters
 
 Periodic gold-marked elite variants preserve the four ordinary archetypes, with higher health/damage. Three randomized optional elite challenge spots spawn finite paced squads and award a free Epic party chest after every guard is defeated. Ordinary elites sometimes drop free Rare party chests. Free chest interaction costs no money and gives each party member an independent upgrade choice with the existing group pause. See [elite encounter playtest](ELITE_CHALLENGES_PLAYTEST.md) for tuning and validation.
+
+## November 18 rail movement
+
+Six ground-following cyan grind rails now span the central flats, including straight, diagonal and curved lines. E enters, mouse balances, Space jumps off with speed, and crouch drops off. Failed balance loses part of forward momentum. See [grind rail playtest](GRIND_RAILS_PLAYTEST.md) for positions, controls and checks. Balance/camera feel remains for player review.

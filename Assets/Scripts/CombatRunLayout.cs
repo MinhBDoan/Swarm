@@ -120,7 +120,7 @@ namespace Swarm
             var layout=new RunLayoutData{seed=seed,bossConsole=console,bossSpawn=boss,
                 terminals=new Vector3[CanyonLayout.DownloadCount],chests=new Vector3[MoneyCrateCount],shops=new Vector3[3],challenges=new Vector3[3]};
             // Preserve exploration across the POIs, with three guaranteed central slots.
-            for(int i=0;i<layout.terminals.Length;i++)
+            foreach(int i in new[]{5,6,7,0,1,2,3,4})
             {
                 Predicate<Vector3> region=null;
                 if(i==0)region=p=>p.x> -35 && p.z<70 && p.y<3;
@@ -130,6 +130,8 @@ namespace Swarm
                 else if(i==5)region=p=>p.x< -65 && p.x> -240 && p.z>120 && p.z<290;
                 else if(i==6)region=p=>p.x< -65 && p.x> -240 && p.z>=290 && p.z<435;
                 else if(i==7)region=p=>p.x< -65 && p.x> -240 && p.z>=435 && p.z<610;
+                if(i>=5 && !pool.Exists(p=>LayoutSeparated(p,reserved) && region(p)))
+                    region=p=>CanyonLayout.InCentralFlats(p);
                 layout.terminals[i]=PickLayoutPoint(pool,reserved,random,region);
             }
             for(int i=0;i<layout.chests.Length;i++)layout.chests[i]=PickLayoutPoint(pool,reserved,random);

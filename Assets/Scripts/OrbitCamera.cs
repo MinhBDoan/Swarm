@@ -31,7 +31,13 @@ namespace Swarm
             if (Input.GetMouseButtonDown(0) && Input.mousePosition.x < Screen.width - 330 && !CombatPlayground.HudConsumesPointer) { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
             if (Cursor.lockState == CursorLockMode.Locked)
             {
-                yaw += Input.GetAxis("Mouse X") * sensitivity;
+                var motor=target.GetComponent<MomentumMotor>();
+                if(motor && motor.IsGrinding)
+                {
+                    Vector3 direction=motor.GrindDirection;
+                    yaw=Mathf.LerpAngle(yaw,Mathf.Atan2(direction.x,direction.z)*Mathf.Rad2Deg,1-Mathf.Exp(-4*Time.deltaTime));
+                }
+                else yaw += Input.GetAxis("Mouse X") * sensitivity;
                 pitch = Mathf.Clamp(pitch - Input.GetAxis("Mouse Y") * sensitivity, -35, 75);
             }
             Quaternion rotation = Quaternion.Euler(pitch, yaw, 0);

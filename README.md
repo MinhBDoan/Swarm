@@ -1,3 +1,5 @@
+Latest movement playtest: **Builds/Swarm-GrindRails/Swarm.exe**. See [rail controls and locations](Docs/Planning/GRIND_RAILS_PLAYTEST.md).
+
 Latest elite/challenge playtest: **Builds/Swarm-EliteChallenges/Swarm.exe**. See [elite challenge notes](Docs/Planning/ELITE_CHALLENGES_PLAYTEST.md).
 
 # Swarm movement prototype

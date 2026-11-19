@@ -1,0 +1,19 @@
+SWARM_GRIND_STEP: six central rails installed (found 6)=True
+SWARM_GRIND_STEP: all rails follow terrain=True
+SWARM_GRIND_STEP: rail rider clearance=True
+SWARM_GRIND_STEP: grab nearby rail=True
+SWARM_GRIND_STEP: flat grind preserves momentum=True
+SWARM_GRIND_STEP: mouse left shifts balance left=True
+SWARM_GRIND_STEP: Space jumps off with speed=True
+SWARM_GRIND_STEP: regrab cooldown=True
+SWARM_GRIND_STEP: menu pause freezes grind and exit input=True
+SWARM_GRIND_STEP: crouch drop keeps speed=True
+SWARM_GRIND_STEP: failed balance slips right with recoverable speed loss=True
+SWARM_GRIND_STEP: approach velocity determines reverse direction=True
+SWARM_GRIND_STEP: enemy impulse detaches grind=True
+SWARM_GRIND_STEP: obstruction releases without crossing wall=True
+SWARM_GRIND_STEP: rail end releases with speed=True
+SWARM_GRIND_STEP: respawn clears grind=True
+SWARM_GRIND_STEP: distant grab rejected=True
+SWARM_GRIND_STEP: new combat run resets grind=True
+SWARM_GRIND_TEST: PASS

@@ -121,3 +121,7 @@ These criteria require player testing as well as automated checks. Total run dur
 ## November 18 elite encounter tuning
 
 Implemented starting values, subject to playtesting: elites have 1.5× health and 1.25× attack damage, with gold collars and labels; periodic packs begin at 45 seconds and recur roughly every 35 active seconds when capacity allows. Ordinary elite kills have a 20% chance of a free Rare party chest. Three challenge spots use the shared randomized run layout. One challenge runs at a time; each spot is usable once per run, sending 10 elites solo plus two per extra player (maximum 20), in paced packs. Clearing the full squad earns one guaranteed Epic free party chest. Challenge guards do not roll additional random chests. These numbers, tiers, pacing, and visual markers are provisional implementation choices rather than finalized balance.
+
+## Rail movement - November 18
+
+Confirmed: players can enter grind rails with an interaction key, preserve momentum, use mouse input to balance with a bar above their character, jump off deliberately, and fall off with momentum loss if balance goes too far left or right. Multiple rails in central flats form the first pass. Straight/curved line placement and numeric balance values remain tuning decisions.
