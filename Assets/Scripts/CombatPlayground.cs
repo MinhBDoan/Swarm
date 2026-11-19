@@ -57,7 +57,7 @@ namespace Swarm
         public string WeaponStatus { get; private set; } = "Waiting for combat";
         public string Notice { get; private set; } = "Try the first combat loop here.";
 
-        class Enemy { public GameObject body; public NavMeshAgent agent; public Renderer visual; public float health, maxHealth, flash, damageScale=1, overtimeHealth=1, overtimeDamage=1, attackClock = 3; public bool elite; public GameObject warning; public EnemyKind kind; public Vector3 aim;
+        class Enemy { public GameObject body; public NavMeshAgent agent; public Renderer visual; public float health, maxHealth, flash, damageScale=1, overtimeHealth=1, overtimeDamage=1, attackClock = 3; public bool elite, eliteVariant, challengeElite; public GameObject warning; public EnemyKind kind; public Vector3 aim;
             public ChargePhase chargePhase;
             public SentinelPhase sentinelPhase;
             public int sentinelMove;
@@ -343,6 +343,7 @@ namespace Swarm
                 if (restClock>0) return;
                 Resting=false;
             }
+            TickEliteWaves();
             if (spawnClock>0 || enemies.Count>=SwarmEnemyLimit) return;
 
             ulong original=contextId;
